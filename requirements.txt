@@ -1,0 +1,3 @@
+rxpy
+sqlalchemy
+setproctitle

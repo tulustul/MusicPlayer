@@ -1,0 +1,87 @@
+{
+    "logFile": "player.log",
+    "logLevel": "DEBUG",
+    "input_interval": 0.02,
+
+    "keybindings": [
+        {
+            "keys": ["<home>"],
+            "command": "navigate_list_top"
+        },
+        {
+            "keys": ["<end>"],
+            "command": "navigate_list_bottom"
+        },
+        {
+            "keys": ["<pagedown>"],
+            "command": "navigate_next_page"
+        },
+        {
+            "keys": ["<pageup>"],
+            "command": "navigate_previous_page"
+        },
+        {
+            "keys": ["<arrowdown>"],
+            "command": "navigate_list_by",
+            "args": [1]
+        },
+        {
+            "keys": ["<arrowup>"],
+            "command": "navigate_list_by",
+            "args": [-1]
+        },
+        {
+            "keys": ["<arrowright>"],
+            "command": "autocomplete_input"
+        },
+        {
+            "keys": ["<enter>"],
+            "command": "play_track",
+            "context": "playlist"
+        },
+        {
+            "keys": ["<arrowleft>"],
+            "command": "seek"
+        },
+        {
+            "keys": ["p"],
+            "command": "previous_track"
+        },
+        {
+            "keys": ["n"],
+            "command": "next_track"
+        },
+        {
+            "keys": ["/"],
+            "command": "search"
+        },
+        {
+            "keys": ["<enter>"],
+            "command": "commit_search",
+            "context": "search"
+        },
+        {
+            "keys": ["<esc>"],
+            "command": "cancel_search",
+            "context": "search"
+        },
+        {
+            "keys": [":"],
+            "command": "open_palette"
+        },
+        {
+            "keys": ["<enter>"],
+            "command": "run_command",
+            "context": "palette"
+        },
+        {
+            "keys": ["<esc>"],
+            "command": "cancel_palette",
+            "context": "palette"
+        },
+        {
+            "keys": ["<esc>"],
+            "command": "hide_current_view"
+        }
+    ]
+}
