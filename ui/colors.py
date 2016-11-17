@@ -1,23 +1,16 @@
+import logging
 import curses
 
-_NORMAL = 1
-_SELECTED = 2
-_ERROR = 3
+from config import theme
 
-NORMAL = None
-SELECTED = None
-ERROR = None
+logger = logging.getLogger('colors')
+
+colors = {}
 
 
 def init():
-    global NORMAL
-    global SELECTED
-    global ERROR
-
-    curses.init_pair(_NORMAL, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    curses.init_pair(_SELECTED, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    curses.init_pair(_ERROR, curses.COLOR_WHITE, curses.COLOR_RED)
-
-    NORMAL = curses.color_pair(_NORMAL)
-    SELECTED = curses.color_pair(_SELECTED)
-    ERROR = curses.color_pair(_ERROR)
+    color_definitions = theme['colors']
+    for i, color_name in enumerate(color_definitions.keys()):
+        foreground, background = color_definitions[color_name]
+        curses.init_pair(i + 1, foreground, background)
+        colors[color_name] = curses.color_pair(i + 1)

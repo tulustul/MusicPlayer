@@ -4,6 +4,11 @@ import logging
 with open('config.json') as config_file:
     config = json.loads(config_file.read())
 
+
+with open('themes/{}.json'.format(config['theme'])) as theme_file:
+    theme = json.loads(theme_file.read())
+
+
 logging.basicConfig(
     filename=config['logFile'],
     level=logging._nameToLevel[config['logLevel']],

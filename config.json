@@ -1,9 +1,14 @@
 {
+    "theme": "afterglow",
     "logFile": "player.log",
     "logLevel": "DEBUG",
     "input_interval": 0.02,
 
     "keybindings": [
+        {
+            "keys": ["q"],
+            "command": "quit"
+        },
         {
             "keys": ["<home>"],
             "command": "navigate_list_top"
@@ -40,8 +45,19 @@
             "context": "playlist"
         },
         {
+            "keys": ["<space>"],
+            "command": "pause_track",
+            "context": "playlist"
+        },
+        {
             "keys": ["<arrowleft>"],
-            "command": "seek"
+            "command": "rewind",
+            "args": [-5]
+        },
+        {
+            "keys": ["<arrowright>"],
+            "command": "rewind",
+            "args": [5]
         },
         {
             "keys": ["p"],

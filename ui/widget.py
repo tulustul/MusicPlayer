@@ -1,6 +1,6 @@
 import curses
 
-from . import colors
+from .colors import colors
 
 
 class Widget:
@@ -16,8 +16,8 @@ class Widget:
         self.lines = 0
         self.cols = 0
 
-        self.normal_color = colors.NORMAL
-        self.selected_color = colors.SELECTED
+        self.normal_color = colors['normal']
+        self.selected_color = colors['selected']
 
     def refresh(self):
         self.win.refresh()

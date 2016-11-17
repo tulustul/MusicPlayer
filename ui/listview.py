@@ -26,7 +26,7 @@ class List(Widget):
         self.search_box.value.subscribe(self.filter_data)
 
     def refresh(self):
-        self.win.clear()
+        self.win.bkgd(' ', self.normal_color)
 
         page_data = self.filtered_data[self.min_index:self.max_index]
         page_data = enumerate(page_data)

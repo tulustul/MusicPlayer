@@ -1,0 +1,12 @@
+{
+    "colors": {
+        "normal": [254, 237],
+        "selected": [254, 240],
+        "bar": [215, 236],
+        "error": [198, 237]
+    },
+    "strings": {
+        "playing": "",
+        "paused": ""
+    }
+}

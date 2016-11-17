@@ -4,3 +4,4 @@ from .search import *
 from .scan import *
 from .palette import *
 from .window import *
+from .quit import *

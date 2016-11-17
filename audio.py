@@ -9,6 +9,8 @@ gi.require_version('Gst', '1.0')
 from gi.repository import GObject
 from gi.repository import Gst
 
+from config import config
+from errors import errors
 import playback
 
 playbin = None
@@ -43,9 +45,14 @@ def init(loop_):
     loop.create_task(pool_messages())
 
 
+def destroy():
+    pipeline.set_state(Gst.State.NULL)
+
+
 async def pool_messages():
+    interval = config.get('input_interval', 0.02)
     while True:
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(interval)
         message = True
         while message:
             message = bus.pop()
@@ -66,30 +73,35 @@ def set_track(track):
     playbin.set_property('uri', track.uri)
 
 
-def seek():
-    playbin.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH, 75 * Gst.SECOND)
+def seek(position):
+    playbin.seek_simple(
+        Gst.Format.TIME,
+        Gst.SeekFlags.FLUSH,
+        position * Gst.SECOND,
+    )
 
 
 def play():
     pipeline.set_state(Gst.State.PLAYING)
+
+    # TODO creates task for each next song
     loop.create_task(fetch_position())
+    playback.state.on_next('playing')
 
 
 def pause():
-    logger.info('PAUSE')
-    # pipeline.set_state(Gst.State)
+    pipeline.set_state(Gst.State.PAUSED)
+    playback.state.on_next('paused')
 
 
 def on_eos(*args):
     playback.end_of_track.on_next(None)
 
 
-def on_error(*args):
-    logger.error(args)
-
-
-def on_progress(*args):
-    logger.error(args)
+def on_error():
+    logger.error('GST error :(')
+    errors.on_next(None)
+    playback.end_of_track.on_next(None)
 
 
 def on_duration_changed():
@@ -106,6 +118,9 @@ def on_message(message):
 
     elif message.type == Gst.MessageType.EOS:
         on_eos()
+
+    elif message.type == Gst.MessageType.ERROR:
+        on_error()
 
     # if structure:
         # structure_name = structure.get_name()

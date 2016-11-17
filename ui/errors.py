@@ -1,4 +1,4 @@
-from . import colors
+from .colors import colors
 from .listview import List
 from errors import errors
 
@@ -10,8 +10,8 @@ class Errors(List):
     def __init__(self):
         super().__init__()
 
-        self.normal_color = colors.ERROR
-        self.selected_color = colors.ERROR
+        self.normal_color = colors['error']
+        self.selected_color = colors['error']
 
         errors.subscribe(self.add_error)
 

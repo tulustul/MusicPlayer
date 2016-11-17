@@ -1,5 +1,6 @@
 import logging
 
+from .colors import colors
 import curses
 
 logger = logging.getLogger(name='ui')
@@ -22,8 +23,9 @@ class Layout:
             self.refresh()
 
     def refresh(self):
-        self.parent_screen.clear()
+        # self.parent_screen.clear()
         self.parent_screen.refresh()
+        # self.parent_screen.bkgd(' ', colors['background'])
         self.update_sizes()
         for widget in self.widgets:
             widget.refresh()
@@ -35,9 +37,7 @@ class Layout:
             widget.HEIGHT for widget in self.widgets if widget.HEIGHT
         )
 
-        logger.warn(self.widgets)
         for widget in self.widgets:
             height = widget.HEIGHT or fluent_widget_height
             widget.set_size(0, y, curses.COLS, height)
-            logger.warn('update sizes {} {}'.format(widget, height))
             y += height

@@ -39,6 +39,10 @@ class Window:
 
         errors.subscribe(lambda e: self.show_view('errors'))
 
+        self.input_mode = False
+
+        self.running = True
+
     def create(self):
         self.screen = curses.initscr()
 
@@ -54,9 +58,9 @@ class Window:
             pass
 
     def destroy(self):
-        curses.curs_set(1)
         curses.echo()
         curses.nocbreak()
+        curses.curs_set(1)
         self.screen.keypad(0)
         self.screen.nodelay(0)
         curses.endwin()
@@ -69,20 +73,22 @@ class Window:
         }
 
     async def process_input(self):
-        interval = config.get('input_interval', 0.1)
-        while True:
+        interval = config.get('input_interval', 0.02)
+        while self.running:
             await asyncio.sleep(interval)
-            try:
-                ch = self.screen.get_wch()
-                if ch == 'q':
-                    self.screen.refresh()
-                    return
-                if ch != -1:
-                    keyboard.raw_keys.on_next(ch)
-            except curses.error:
-                pass
-            except KeyboardInterrupt:
-                self.hide_view(self.current_view)
+            ch = 0
+            while ch != -1:
+                try:
+                    if self.input_mode:
+                        ch = self.screen.get_wch()
+                    else:
+                        ch = self.screen.getch()
+                    if ch != -1:
+                        keyboard.raw_keys.on_next(ch)
+                except curses.error as e:
+                    logger.error(e)
+                except KeyboardInterrupt:
+                    self.hide_view(self.current_view)
 
     def get_focused_view(self):
         return self.views[self.current_view]
@@ -101,3 +107,6 @@ class Window:
 
     def hide_current_view(self):
         self.hide_view(self.current_view)
+
+    def quit(self):
+        self.running = False

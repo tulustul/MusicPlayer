@@ -1,9 +1,7 @@
 import logging
 
 from .decorator import command
-import audio
 import playback
-import playlist
 import ui
 
 logger = logging.getLogger('commands')
@@ -15,14 +13,18 @@ def play_track():
 
 
 @command()
-def seek():
-    audio.seek()
+def pause_track():
+    playback.toggle_pause()
+
+
+@command()
+def rewind(offset):
+    playback.rewind(offset)
 
 
 @command()
 def next_track():
     playback.next_track()
-
 
 
 @command()

@@ -7,7 +7,8 @@ KEY_CODES = {
     '<pageup>': 339,
     '<backspace>': 263,
     '<space>': 32,
-    '<enter>': '\n',
+    # '<enter>': '\n',
+    '<enter>': 10,
     '<tab>': 9,
     '<esc>': 27,
     '<delete>': 330,
@@ -35,7 +36,8 @@ KEY_CODES_REVERSED = {code: name for name, code in KEY_CODES.items()}
 
 def tranform_code(key):
     try:
-        default = chr(key) if isinstance(key, int) else key
+        default = chr(key)
+        # default = chr(key) if isinstance(key, int) else key
         return KEY_CODES_REVERSED.get(key, default)
     except:
         return ''
