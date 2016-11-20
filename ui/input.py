@@ -2,14 +2,12 @@ import curses
 
 from rx.subjects import Subject
 
-from . import colors
-from .widget import Widget
+from .colors import colors
+from .toolkit.component import Component
 from keyboard import raw_keys
 
 
-class Input(Widget):
-
-    HEIGHT = 1
+class Input(Component):
 
     def __init__(self):
         super().__init__()
@@ -24,21 +22,22 @@ class Input(Widget):
         # self.set_value('scan_local_files /run/media/disk/Muzyka')
         self.set_value('scan_local_files /mnt/toshiba/Filmy')
 
+        self.selected_color = colors['selected']
+
     def reset(self):
         self.text = [' ']
         self.cursor = len(self.text) - 1
 
-    def refresh(self):
+    def draw_content(self):
         self.win.addstr(
             0, 0, ''.join(self.text[:self.cursor])
         )
         self.win.addstr(
-            0, self.cursor, self.text[self.cursor], colors.SELECTED
+            0, self.cursor, self.text[self.cursor], self.selected_color
         )
         self.win.addstr(
             0, self.cursor + 1, ''.join(self.text[self.cursor + 1:])
         )
-        super().refresh()
 
     def handle_key(self, key):
         if not self.win:
@@ -67,8 +66,8 @@ class Input(Widget):
             self.text.insert(self.cursor, key)
             self.cursor += 1
 
-        self.win.clear()
-        self.refresh()
+        # self.win.clear()
+        # self.refresh()
 
         self.value.on_next(self.text_value)
 

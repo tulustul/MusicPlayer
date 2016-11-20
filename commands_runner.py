@@ -21,7 +21,7 @@ def run_text_command(text_command):
 
 
 def run_command(command, *args):
-    logger.debug('invoking command: {}'.format(command.name))
+    logger.debug('invoking command: {} {}'.format(command.name, args))
     try:
         command.func(*args)
     except Exception as e:

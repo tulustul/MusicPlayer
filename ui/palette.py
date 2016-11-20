@@ -4,8 +4,6 @@ from commands import registry
 
 class Palette(List):
 
-    HEIGHT = 5
-
     def __init__(self):
         super().__init__()
 

@@ -17,6 +17,7 @@ playbin = None
 pipeline = None
 bus = None
 loop = None
+playing = False
 
 
 def init(loop_):
@@ -43,6 +44,7 @@ def init(loop_):
     bus = pipeline.get_bus()
 
     loop.create_task(pool_messages())
+    loop.create_task(fetch_position())
 
 
 def destroy():
@@ -63,9 +65,10 @@ async def pool_messages():
 async def fetch_position():
     while True:
         await asyncio.sleep(0.5)
-        success, position = playbin.query_position(Gst.Format.TIME)
-        if success:
-            playback.progress.on_next(position / Gst.SECOND)
+        if playing:
+            success, position = playbin.query_position(Gst.Format.TIME)
+            if success:
+                playback.progress.on_next(position / Gst.SECOND)
 
 
 def set_track(track):
@@ -82,26 +85,31 @@ def seek(position):
 
 
 def play():
+    global playing
     pipeline.set_state(Gst.State.PLAYING)
-
-    # TODO creates task for each next song
-    loop.create_task(fetch_position())
+    playing = True
     playback.state.on_next('playing')
 
 
 def pause():
+    global playing
     pipeline.set_state(Gst.State.PAUSED)
     playback.state.on_next('paused')
+    playing = False
 
 
 def on_eos(*args):
+    global playing
     playback.end_of_track.on_next(None)
+    playing = False
 
 
 def on_error():
+    global playing
     logger.error('GST error :(')
     errors.on_next(None)
     playback.end_of_track.on_next(None)
+    playing = False
 
 
 def on_duration_changed():

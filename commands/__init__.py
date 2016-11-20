@@ -5,3 +5,4 @@ from .scan import *
 from .palette import *
 from .window import *
 from .quit import *
+from .refresh import *

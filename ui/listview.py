@@ -1,14 +1,13 @@
 import logging
 
-from .widget import Widget
+from .colors import colors
+from .toolkit.component import Component
 from .input import Input
 
 logger = logging.getLogger('ui')
 
 
-class List(Widget):
-
-    HEIGHT = None
+class List(Component):
 
     def __init__(self):
         super().__init__()
@@ -25,30 +24,37 @@ class List(Widget):
 
         self.search_box.value.subscribe(self.filter_data)
 
-    def refresh(self):
-        self.win.bkgd(' ', self.normal_color)
+        self.selected_color = colors['selected']
 
+        self.columns = []
+
+    def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
         page_data = enumerate(page_data)
 
+        x = 0
+        for column in self.columns:
+            self.win.addstr(0, x, column['name'], self.selected_color)
+            x += int(self.cols / len(self.columns))
+
         for i, entry in page_data:
-            text = self.entry_value(entry)
             if i + self.min_index == self.index:
-                self.win.addstr(i, 0, text, self.selected_color)
+                color = self.selected_color
             else:
-                self.win.addstr(i, 0, text, self.normal_color)
+                color = self.color
+
+            x = 0
+            for column in self.columns:
+                text = str(getattr(entry, column['field'], ''))
+                self.win.addstr(i + 1, x, text, color)
+                x += int(self.cols / len(self.columns))
 
         if self.search_enabled:
             self.search_box.refresh()
 
-        super().refresh()
-
     @property
     def data(self):
         return self._data
-
-    def entry_value(self, entry):
-        return entry
 
     @data.setter
     def data(self, data):
@@ -66,10 +72,10 @@ class List(Widget):
         self.refresh()
 
     def set_size(self, x, y, cols, lines):
-        if self.search_enabled:
-            self.search_box.set_size(x, y, cols, self.search_box.HEIGHT)
-            y += 1
-            cols -= 1
+        # if self.search_enabled:
+        #     self.search_box.set_size(x, y, cols, self.search_box.HEIGHT)
+        #     y += 1
+        #     cols -= 1
         super().set_size(x, y, cols, lines)
 
     @property
@@ -78,7 +84,7 @@ class List(Widget):
 
     @property
     def max_index(self):
-        return (self.page + 1) * self.list_size - 1
+        return (self.page + 1) * self.list_size - 2
 
     @property
     def value(self):
@@ -106,7 +112,7 @@ class List(Widget):
     def set_index(self, new_index):
         self.index = max(0, min(new_index, len(self.filtered_data) - 1))
         self.page = int((self.index + 1) / self.list_size)
-        self.layout.refresh()
+        self.refresh()
 
     def filter_data(self, term):
         term = term.split()

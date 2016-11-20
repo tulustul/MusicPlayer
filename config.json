@@ -4,6 +4,62 @@
     "logLevel": "DEBUG",
     "input_interval": 0.02,
 
+    "layout": {
+        "class": "Layout",
+        "direction": "vertical",
+        "components": [
+            {
+                "class": "Layout",
+                "direction": "horizontal",
+                "components": [
+                    {
+                        "class": "Layout",
+                        "id": "mainview",
+                        "color": "test2"
+                    }
+                ]
+            },
+            {
+                "class": "Errors",
+                "id": "errors",
+                "desired_size": 5,
+                "color": "error"
+            },
+            {
+                "class": "Palette",
+                "id": "commands",
+                "desired_size": 5,
+                "color": "test4"
+            },
+            {
+                "class": "Bar",
+                "id": "bar",
+                "desired_size": 1,
+                "color": "bar"
+            }
+        ]
+    },
+
+    "playlist": {
+        "columns": [
+            {
+                "field": "name",
+                "name": "name",
+                "priority": 1
+            },
+            {
+                "field": "id",
+                "name": "id",
+                "priority": 1
+            },
+            {
+                "field": "length",
+                "name": "length",
+                "priority": 1
+            }
+        ]
+    },
+
     "keybindings": [
         {
             "keys": ["q"],
@@ -98,6 +154,10 @@
         {
             "keys": ["<esc>"],
             "command": "hide_current_view"
+        },
+        {
+            "keys": ["<resize>"],
+            "command": "refresh"
         }
     ]
 }

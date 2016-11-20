@@ -5,9 +5,12 @@ import logging
 from . import colors
 from .errors import Errors
 from .bar import Bar
-from .layout import Layout
+from .welcome_view import WelcomeView
+# from .layout import Layout
 from .palette import Palette
 from .playlist import Playlist
+from .toolkit.renderer import Renderer
+from .toolkit.layout import Layout
 from config import config
 from errors import errors
 import keyboard
@@ -32,10 +35,14 @@ class Window:
 
         self.init_views()
 
-        self.layout = Layout(self.screen)
+        main_component = Layout.make_from_config(config['layout'])
+        self.renderer = Renderer(self.screen, main_component)
 
-        self.layout.add(self.get_focused_view())
-        self.layout.add(Bar())
+        # self.sidebar = main_component.get_by_id('sidebar')
+        self.mainview = main_component.get_by_id('mainview')
+
+        # self.sidebar.add(WelcomeView())
+        self.mainview.add(self.views['playlist'])
 
         errors.subscribe(lambda e: self.show_view('errors'))
 
@@ -74,7 +81,9 @@ class Window:
 
     async def process_input(self):
         interval = config.get('input_interval', 0.02)
+        self.renderer.redraw()
         while self.running:
+            self.renderer.update()
             await asyncio.sleep(interval)
             ch = 0
             while ch != -1:
@@ -95,14 +104,14 @@ class Window:
 
     def show_view(self, view):
         widget = self.views[view]
-        self.layout.add(widget)
+        # self.layout.add(widget)
         self.views_activity.append(self.current_view)
         self.current_view = view
 
     def hide_view(self, view):
         widget = self.views[view]
         if self.views_activity:
-            self.layout.remove(widget)
+            # self.layout.remove(widget)
             self.current_view = self.views_activity.pop()
 
     def hide_current_view(self):
@@ -110,3 +119,6 @@ class Window:
 
     def quit(self):
         self.running = False
+
+    def refresh(self):
+        self.renderer.redraw()

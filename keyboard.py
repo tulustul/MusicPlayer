@@ -1,3 +1,4 @@
+import curses
 from rx.subjects import Subject
 
 KEY_CODES = {
@@ -29,6 +30,7 @@ KEY_CODES = {
     '<f10>': 274,
     '<f11>': 275,
     '<f12>': 276,
+    '<resize>': curses.KEY_RESIZE,
 }
 
 KEY_CODES_REVERSED = {code: name for name, code in KEY_CODES.items()}
