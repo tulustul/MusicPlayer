@@ -1,3 +1,4 @@
 rxpy
 sqlalchemy
 setproctitle
+mutagen

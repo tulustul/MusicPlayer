@@ -26,8 +26,10 @@ class AbstractComponent(metaclass=ComponentMeta):
         self.lines = 0
         self.cols = 0
 
-        self.visible = True
+        self._visible = True
         self.desired_size = 0
+
+        self.parent = None
 
     @classmethod
     def make_from_config(cls, config):
@@ -50,6 +52,14 @@ class AbstractComponent(metaclass=ComponentMeta):
 
     def __str__(self):
         return '<{}> {}'.format(self.__class__.__name__, self.id)
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, visible):
+        self._visible = visible
 
 
 class Component(AbstractComponent):

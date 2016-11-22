@@ -26,16 +26,9 @@ class List(Component):
 
         self.selected_color = colors['selected']
 
-        self.columns = []
-
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
         page_data = enumerate(page_data)
-
-        x = 0
-        for column in self.columns:
-            self.win.addstr(0, x, column['name'], self.selected_color)
-            x += int(self.cols / len(self.columns))
 
         for i, entry in page_data:
             if i + self.min_index == self.index:
@@ -43,11 +36,7 @@ class List(Component):
             else:
                 color = self.color
 
-            x = 0
-            for column in self.columns:
-                text = str(getattr(entry, column['field'], ''))
-                self.win.addstr(i + 1, x, text, color)
-                x += int(self.cols / len(self.columns))
+            self.win.addstr(i, 0, entry, color)
 
         if self.search_enabled:
             self.search_box.refresh()
@@ -84,7 +73,7 @@ class List(Component):
 
     @property
     def max_index(self):
-        return (self.page + 1) * self.list_size - 2
+        return (self.page + 1) * self.list_size - 1
 
     @property
     def value(self):

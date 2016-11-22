@@ -1,4 +1,3 @@
-from .colors import colors
 from .listview import List
 from errors import errors
 
@@ -10,10 +9,17 @@ class Errors(List):
     def __init__(self):
         super().__init__()
 
-        self.normal_color = colors['error']
-        self.selected_color = colors['error']
+        errors.subscribe(self.add_message)
 
-        errors.subscribe(self.add_error)
+    def add_message(self, message):
+        self.data.append(message)
+        self.desired_size = len(self.data)
+        self.parent.refresh()
 
-    def add_error(self, error):
-        self.data.append(error)
+    @property
+    def visible(self):
+        return bool(self.data)
+
+    def draw_content(self):
+        for i, entry in enumerate(self.data):
+            self.win.addstr(i, 0, entry, self.color)

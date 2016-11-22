@@ -14,6 +14,7 @@ from .toolkit.layout import Layout
 from config import config
 from errors import errors
 import keyboard
+import context
 
 logger = logging.getLogger('ui')
 
@@ -21,6 +22,8 @@ logger = logging.getLogger('ui')
 class Window:
 
     def __init__(self):
+        context.register('playlist')
+
         self.views = {}
 
         self.views_activity = []
@@ -40,11 +43,14 @@ class Window:
 
         # self.sidebar = main_component.get_by_id('sidebar')
         self.mainview = main_component.get_by_id('mainview')
+        self.palette = main_component.get_by_id('palette')
+
+        self.palette.visible = False
 
         # self.sidebar.add(WelcomeView())
         self.mainview.add(self.views['playlist'])
 
-        errors.subscribe(lambda e: self.show_view('errors'))
+        # errors.subscribe(lambda e: self.show_view('errors'))
 
         self.input_mode = False
 
@@ -76,7 +82,7 @@ class Window:
         self.views = {
             'playlist': Playlist(),
             'palette': Palette(),
-            'errors': Errors(),
+            # 'errors': Errors(),
         }
 
     async def process_input(self):

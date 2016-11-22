@@ -1,9 +1,9 @@
-from .listview import List
+from .table import Table
 from config import config
 import playlist
 
 
-class Playlist(List):
+class Playlist(Table):
 
     def __init__(self):
         super().__init__()

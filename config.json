@@ -22,12 +22,11 @@
             {
                 "class": "Errors",
                 "id": "errors",
-                "desired_size": 5,
                 "color": "error"
             },
             {
                 "class": "Palette",
-                "id": "commands",
+                "id": "palette",
                 "desired_size": 5,
                 "color": "test4"
             },
@@ -108,12 +107,12 @@
         {
             "keys": ["<arrowleft>"],
             "command": "rewind",
-            "args": [-5]
+            "args": [-30]
         },
         {
             "keys": ["<arrowright>"],
             "command": "rewind",
-            "args": [5]
+            "args": [30]
         },
         {
             "keys": ["p"],

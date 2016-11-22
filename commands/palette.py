@@ -1,11 +1,13 @@
 from .decorator import command
 import ui
 import commands_runner
+import context
 
 
 @command()
 def open_palette():
-    ui.win.show_view('palette')
+    context.push('palette')
+    # ui.win.show_view('palette')
 
 
 @command()

@@ -20,8 +20,8 @@ class Layout(AbstractComponent):
 
     @classmethod
     def make_from_config(cls, config):
-        component = super().make_from_config(config)
-        component.direction = Layout.Direction[
+        layout = super().make_from_config(config)
+        layout.direction = Layout.Direction[
             config.get('direction', 'vertical')
         ]
         for child in config.get('components', []):
@@ -31,20 +31,28 @@ class Layout(AbstractComponent):
                     'unknown component class: {}'.format(component_class)
                 )
                 return
-            component.add(component_class.make_from_config(child))
-        return component
+            layout.add(component_class.make_from_config(child))
+        return layout
+
+    def refresh(self):
+        super().refresh()
+        self.calculate_sizes()
 
     def add(self, component):
         self.childs.append(component)
+        component.parent = self
         self.calculate_sizes()
         self.refresh()
 
     def remove(self, component):
         self.childs.remove(component)
+        component.parent = None
         self.calculate_sizes()
         self.refresh()
 
     def clear(self):
+        for child in self.childs:
+            child.parent = None
         self.childs = []
         self.refresh()
 
@@ -64,11 +72,11 @@ class Layout(AbstractComponent):
         current_offset = 0
 
         fluent_size = total_size - sum(
-            component.desired_size for component in self.childs
+            component.desired_size for component in self.visible_childs
             if component.desired_size
         )
 
-        for component in self.childs:
+        for component in self.visible_childs:
             size = component.desired_size or max(fluent_size, 0)
 
             if vertical:
@@ -82,6 +90,10 @@ class Layout(AbstractComponent):
             child_layout.calculate_sizes()
 
     @property
+    def visible_childs(self):
+        return (child for child in self.childs if child.visible)
+
+    @property
     def child_layouts(self):
         yield from (
             child for child in self.childs
@@ -89,7 +101,7 @@ class Layout(AbstractComponent):
         )
 
     def draw(self):
-        for child in self.childs:
+        for child in self.visible_childs:
             child.draw()
 
     def get_by_id(self, component_id):
