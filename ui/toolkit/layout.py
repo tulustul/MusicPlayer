@@ -3,6 +3,7 @@ from enum import Enum
 
 from .component import AbstractComponent, class_registry
 from errors import errors
+import ui
 
 logger = logging.getLogger(name='ui')
 
@@ -41,14 +42,16 @@ class Layout(AbstractComponent):
     def add(self, component):
         self.childs.append(component)
         component.parent = self
-        self.calculate_sizes()
-        self.refresh()
+        # self.calculate_sizes()
+        # self.refresh()
+        ui.win.refresh()
 
     def remove(self, component):
         self.childs.remove(component)
         component.parent = None
-        self.calculate_sizes()
-        self.refresh()
+        # self.calculate_sizes()
+        # self.refresh()
+        ui.win.refresh()
 
     def clear(self):
         for child in self.childs:
@@ -76,13 +79,19 @@ class Layout(AbstractComponent):
             if component.desired_size
         )
 
+        logger.info('fluent_size: {}'.format(fluent_size))
+
         for component in self.visible_childs:
             size = component.desired_size or max(fluent_size, 0)
 
             if vertical:
-                component.set_size(0, current_offset, self.cols, size)
+                component.set_size(
+                    self.x, self.y + current_offset, self.cols, size,
+                )
             else:
-                component.set_size(current_offset, 0, size, self.lines)
+                component.set_size(
+                    self.x + current_offset, self.y, size, self.lines,
+                )
 
             current_offset += size
 
@@ -117,3 +126,19 @@ class Layout(AbstractComponent):
                 if result:
                     break
         return result
+
+    @property
+    def visible(self):
+        return self._visible and list(self.visible_childs)
+
+    @property
+    def desired_size(self):
+        childs_desired_size = sum(
+            c.desired_size or self._desired_size
+            for c in self.visible_childs
+        )
+        return min(self._desired_size, childs_desired_size)
+
+    @desired_size.setter
+    def desired_size(self, desired_size):
+        self._desired_size = desired_size

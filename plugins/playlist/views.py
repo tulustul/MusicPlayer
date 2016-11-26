@@ -1,6 +1,10 @@
-from .table import Table
+import logging
+
+from ui.table import Table
 from config import config
-import playlist
+import stream
+
+logger = logging.getLogger('ui')
 
 
 class Playlist(Table):
@@ -10,8 +14,9 @@ class Playlist(Table):
 
         self.columns = config['playlist']['columns']
 
-        playlist.tracks.subscribe(self.set_tracks)
+        stream.get('playlist.tracks').subscribe(self.set_tracks)
 
     def set_tracks(self, tracks):
+        logger.info('tracks: {}'.format(len(tracks)))
         self.data = tracks
         self.refresh()

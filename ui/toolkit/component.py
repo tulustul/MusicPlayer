@@ -27,7 +27,7 @@ class AbstractComponent(metaclass=ComponentMeta):
         self.cols = 0
 
         self._visible = True
-        self.desired_size = 0
+        self._desired_size = 0
 
         self.parent = None
 
@@ -60,6 +60,14 @@ class AbstractComponent(metaclass=ComponentMeta):
     @visible.setter
     def visible(self, visible):
         self._visible = visible
+
+    @property
+    def desired_size(self):
+        return self._desired_size
+
+    @desired_size.setter
+    def desired_size(self, desired_size):
+        self._desired_size = desired_size
 
 
 class Component(AbstractComponent):

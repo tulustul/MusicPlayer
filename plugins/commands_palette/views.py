@@ -1,4 +1,4 @@
-from .listview import List
+from ui.listview import List
 from commands import registry
 
 

@@ -2,3 +2,4 @@ rxpy
 sqlalchemy
 setproctitle
 mutagen
+pyinotify

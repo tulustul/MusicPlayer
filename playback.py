@@ -2,7 +2,7 @@ import math
 from collections import namedtuple
 import logging
 
-from rx.subjects import Subject
+from rx.subjects import Subject, ReplaySubject
 
 import audio
 import ui
@@ -72,7 +72,7 @@ def previous_track(_=None):
 
 
 def set_track_by(offset):
-    view = ui.win.get_focused_view()
+    view = ui.win.current_view()
     view.index += offset
     view.refresh()
     current_track.on_next(view.value)
@@ -93,10 +93,10 @@ def toggle_pause():
         logger.error('Unknown playback state "{}"'.format(current_state))
 
 
-state = Subject()
-current_track = Subject()
-progress = Subject()
-duration = Subject()
+state = ReplaySubject(1)
+current_track = ReplaySubject(1)
+progress = ReplaySubject(1)
+duration = ReplaySubject(1)
 end_of_track = Subject()
 
 current_track.subscribe(play_track)

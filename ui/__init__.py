@@ -1,6 +1,17 @@
+from .window import Window
+
 win = None
 
 
-def set_window(new_window):
+def init():
     global win
-    win = new_window
+    win = Window()
+
+
+def destroy():
+    if win:
+        win.destroy()
+
+
+def initialize():
+    win.initialize_view()

@@ -48,7 +48,8 @@ def init(loop_):
 
 
 def destroy():
-    pipeline.set_state(Gst.State.NULL)
+    if pipeline:
+        pipeline.set_state(Gst.State.NULL)
 
 
 async def pool_messages():

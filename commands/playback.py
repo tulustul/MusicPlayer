@@ -9,7 +9,7 @@ logger = logging.getLogger('commands')
 
 @command()
 def play_track():
-    playback.current_track.on_next(ui.win.get_focused_view().value)
+    playback.current_track.on_next(ui.win.current_view.value)
 
 
 @command()

@@ -3,6 +3,20 @@
     "logFile": "player.log",
     "logLevel": "DEBUG",
     "input_interval": 0.02,
+    "debug": true,
+    "plugins_reload_debounce_time": 0.3,
+    "plugins_paths": [
+        "~/.config/player/"
+    ],
+    "default_context": "playlist",
+
+    "plugins": [
+        "test_plug",
+        "bar",
+        "playlist",
+        "errors_view",
+        "commands_palette"
+    ],
 
     "layout": {
         "class": "Layout",
@@ -20,15 +34,9 @@
                 ]
             },
             {
-                "class": "Errors",
-                "id": "errors",
-                "color": "error"
-            },
-            {
-                "class": "Palette",
-                "id": "palette",
-                "desired_size": 5,
-                "color": "test4"
+                "class": "Layout",
+                "id": "bottomview",
+                "desired_size": 5
             },
             {
                 "class": "Bar",
@@ -40,6 +48,7 @@
     },
 
     "playlist": {
+        "open_in": "mainview",
         "columns": [
             {
                 "field": "name",
@@ -57,6 +66,14 @@
                 "priority": 1
             }
         ]
+    },
+
+    "palette": {
+        "open_in": "bottomview"
+    },
+
+    "errors": {
+        "open_in": "bottomview"
     },
 
     "keybindings": [

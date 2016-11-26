@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, exists
 from sqlalchemy.orm import sessionmaker
 
 from .models import *
-import playlist
+import stream
 
 logger = logging.getLogger('library')
 
@@ -20,7 +20,7 @@ def init():
 
     tracks = session.query(Track)
 
-    playlist.tracks.on_next(list(tracks))
+    stream.get('playlist.tracks').on_next(list(tracks))
 
 
 def add_tracks(tracks):

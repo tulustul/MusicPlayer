@@ -3,7 +3,7 @@ import logging
 import os
 
 from .decorator import command
-import playlist
+from plugins import playlist
 from library.models import Track
 import library
 

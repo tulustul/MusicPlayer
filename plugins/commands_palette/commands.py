@@ -1,4 +1,4 @@
-from .decorator import command
+from commands.decorator import command
 import ui
 import commands_runner
 import context
