@@ -4,6 +4,7 @@ from config import theme
 from ui.toolkit.component import Component
 from ui.colors import colors
 import playback
+import context
 
 logger = logging.getLogger('ui')
 
@@ -21,10 +22,13 @@ class Bar(Component):
 
         self.track = None
 
+        self.context_name = None
+
         self.subscriptions = [
             playback.current_track.subscribe(self.on_track_changed),
             playback.time_tracking.subscribe(self.on_time_track_changed),
             playback.state.subscribe(self.on_state_changed),
+            context.switch.subscribe(self.on_context_changed),
         ]
 
         self.color = colors['bar']
@@ -35,13 +39,14 @@ class Bar(Component):
     #         subscription()
 
     def draw_content(self):
-        right_text = ''
+        right_text = '-:--/-:-- -%  {}'.format(self.context_name)
         progress_div = 0
         if self.time_track:
-            right_text = '  {}/{} {}%'.format(
+            right_text = '  {}/{} {}%  {}'.format(
                 self.time_track.elapsed,
                 self.time_track.total,
                 int(self.time_track.progress_percentage),
+                self.context_name,
             )
             progress_div = int(
                 self.cols * self.time_track.progress_percentage / 100
@@ -80,9 +85,13 @@ class Bar(Component):
             self.state = state
             self.refresh()
 
+    def on_context_changed(self, context):
+        self.context_name = context.name
+        self.refresh()
+
     @property
     def track_name(self):
-        return self.track.name if self.track else ''
+        return self.track.name if self.track else '---'
 
     @property
     def state_indicator(self):

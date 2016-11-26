@@ -19,8 +19,8 @@ class Input(Component):
 
         self.commit = Subject()
 
-        # self.set_value('scan_local_files /run/media/disk/Muzyka')
-        self.set_value('scan_local_files /mnt/toshiba/Filmy')
+        self.set_value('scan_local_files /run/media/disk/Muzyka')
+        # self.set_value('scan_local_files /mnt/toshiba/Filmy')
 
         self.selected_color = colors['selected']
 

@@ -2,6 +2,7 @@ import asyncio
 import sys
 import traceback
 import logging
+import curses
 
 import setproctitle
 
@@ -27,6 +28,7 @@ try:
     import bindings
     import library
     import context
+    import keyboard
 except Exception as e:
     log_exception()
 else:
@@ -50,7 +52,14 @@ else:
 
             context.push(config['default_context'])
 
-            loop.run_until_complete(ui.win.process_input())
+            stop = False
+            while not stop:
+                try:
+                    stop = True
+                    loop.run_until_complete(ui.win.process_input())
+                except KeyboardInterrupt:
+                    stop = False
+                    keyboard.raw_keys.on_next(curses.KEY_EXIT)
         except Exception as e:
             crashed = True
             log_exception()

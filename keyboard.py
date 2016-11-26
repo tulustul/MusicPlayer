@@ -31,6 +31,7 @@ KEY_CODES = {
     '<f11>': 275,
     '<f12>': 276,
     '<resize>': curses.KEY_RESIZE,
+    '<interrupt>': curses.KEY_EXIT,
 }
 
 KEY_CODES_REVERSED = {code: name for name, code in KEY_CODES.items()}

@@ -1,3 +1,4 @@
+import os
 import asyncio
 import curses
 import logging
@@ -9,6 +10,8 @@ from config import config
 import keyboard
 
 logger = logging.getLogger('ui')
+
+os.environ.setdefault('ESCDELAY', '25')
 
 
 class Window:
@@ -95,3 +98,8 @@ class Window:
         self.current_view = view
         if view not in container.childs:
             container.add(view)
+
+    def remove_view_from(self, view, container_id):
+        container = self.main_component.get_by_id(container_id)
+        if view in container.childs:
+            container.remove(view)

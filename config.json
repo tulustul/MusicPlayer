@@ -149,11 +149,6 @@
             "context": "search"
         },
         {
-            "keys": ["<esc>"],
-            "command": "cancel_search",
-            "context": "search"
-        },
-        {
             "keys": [":"],
             "command": "open_palette"
         },
@@ -163,13 +158,8 @@
             "context": "palette"
         },
         {
-            "keys": ["<esc>"],
-            "command": "cancel_palette",
-            "context": "palette"
-        },
-        {
-            "keys": ["<esc>"],
-            "command": "hide_current_view"
+            "keys": ["<esc>", "<interrupt>"],
+            "command": "pop_context"
         },
         {
             "keys": ["<resize>"],

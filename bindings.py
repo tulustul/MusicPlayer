@@ -15,12 +15,15 @@ context_keybindings = defaultdict(dict)
 
 
 def get_binding(key):
-    logger.info(context.current_context)
-    binding_context = context_keybindings.get(context.current_context) or {}
+    logger.info(context.current_context.name)
+    binding_context = context_keybindings.get(
+        context.current_context.name,
+    ) or {}
     return binding_context.get(key) or general_keybindings.get(key)
 
 
 def handle_keys(key):
+    logger.debug('key pressed: {}'.format(key))
     binding = get_binding(key)
     if binding:
         command, args = binding
