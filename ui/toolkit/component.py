@@ -84,10 +84,10 @@ class Component(AbstractComponent):
         return component
 
     def draw(self):
-        logger.debug(
-            '{} draw x:{} y:{} lines:{} cols:{}'
-            .format(self, self.x, self.y, self.lines, self.cols)
-        )
+        # logger.debug(
+        #     '{} draw x:{} y:{} lines:{} cols:{}'
+        #     .format(self, self.x, self.y, self.lines, self.cols)
+        # )
         self.win.clear()
         self.win.bkgd(' ', self.color)
         self.draw_content()
@@ -95,6 +95,13 @@ class Component(AbstractComponent):
 
     def draw_content(self):
         raise NotImplementedError
+
+    def draw_text(self, text, x, y, length, *args):
+        if len(text) > length:
+            text = text[:length - 1] + '…'
+        else:
+            text = text + ' ' * (length - len(text))
+        self.win.addstr(y, x, text, *args)
 
     def set_size(self, *args):
         super().set_size(*args)

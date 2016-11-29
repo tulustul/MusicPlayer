@@ -39,29 +39,35 @@ class Bar(Component):
     #         subscription()
 
     def draw_content(self):
-        right_text = '-:--/-:-- -%  {}'.format(self.context_name)
-        progress_div = 0
-        if self.time_track:
-            right_text = '  {}/{} {}%  {}'.format(
-                self.time_track.elapsed,
-                self.time_track.total,
-                int(self.time_track.progress_percentage),
-                self.context_name,
-            )
-            progress_div = int(
-                self.cols * self.time_track.progress_percentage / 100
-            )
+        progress_percentage = (
+            self.time_track.progress_percentage if self.time_track else 0
+        )
+
+        right_text = '{}/{} {}%  {}'.format(
+            self.time_track.elapsed if self.time_track else '-',
+            self.time_track.total if self.time_track else '-',
+            int(progress_percentage) if self.time_track else '-',
+            self.context_name,
+        )
 
         left_text = '{} {}'.format(
             self.state_indicator,
             self.track_name,
-        )[:self.cols - len(right_text)]
+        )
+
+        max_left_text_length = self.cols - len(right_text) - 1
+        if len(left_text) >= max_left_text_length:
+            left_text = left_text[:max_left_text_length - 2] + '… '
 
         text = '{}{}{}'.format(
             left_text,
             ' ' * (self.cols - len(left_text) - 1 - len(right_text)),
             right_text,
         )
+
+        progress_div = int(self.cols * (progress_percentage / 100))
+        progress_div = min(self.cols - 1, progress_div)
+
 
         self.win.addstr(0, 0, text[:progress_div], self.elapsed_color)
         self.win.addstr(0, progress_div, text[progress_div:], self.color)
@@ -72,7 +78,6 @@ class Bar(Component):
             self.refresh()
 
     def on_time_track_changed(self, time_track):
-        logger.debug('---s-assss--------asda')
         if (
             not self.time_track or
             self.time_track.elapsed != time_track.elapsed
@@ -91,7 +96,10 @@ class Bar(Component):
 
     @property
     def track_name(self):
-        return self.track.name if self.track else '---'
+        return '{} - {}'.format(
+            self.track.title,
+            self.track.artist,
+        ) if self.track else '---'
 
     @property
     def state_indicator(self):

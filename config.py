@@ -15,6 +15,9 @@ logging.basicConfig(
     format='%(levelname)s:%(name)s %(asctime)s %(message)s',
 )
 
+rx_logger = logging.getLogger('Rx')
+rx_logger.setLevel(logging.INFO)
+
 
 def get_keybindings():
     if not config:

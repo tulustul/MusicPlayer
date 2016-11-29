@@ -13,9 +13,12 @@
     "plugins": [
         "test_plug",
         "bar",
+        "library",
         "playlist",
         "errors_view",
-        "commands_palette"
+        "commands_palette",
+        "scan",
+        "track_scheduler"
     ],
 
     "layout": {
@@ -51,19 +54,32 @@
         "open_in": "mainview",
         "columns": [
             {
-                "field": "name",
-                "name": "name",
+                "field": "track_number",
+                "name": "NO",
+                "priority": 1,
+                "size": 3
+            },
+            {
+                "field": "title",
+                "name": "TITLE",
                 "priority": 1
             },
             {
-                "field": "id",
-                "name": "id",
+                "field": "album",
+                "name": "ALBUM",
+                "priority": 1
+            },
+            {
+                "field": "artist",
+                "name": "ARTIST",
                 "priority": 1
             },
             {
                 "field": "length",
-                "name": "length",
-                "priority": 1
+                "name": "LENGTH",
+                "priority": 1,
+                "size": 6,
+                "format": "time"
             }
         ]
     },

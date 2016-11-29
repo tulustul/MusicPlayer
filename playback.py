@@ -6,6 +6,7 @@ from rx.subjects import Subject, ReplaySubject
 
 import audio
 import ui
+import utils
 
 logger = logging.getLogger('playback')
 
@@ -19,26 +20,10 @@ TimeTrack = namedtuple(
 )
 
 
-def format_seconds(seconds):
-    seconds = int(seconds)
-
-    hours = math.floor(seconds / 3600)
-    seconds -= hours * 3600
-
-    minutes = math.floor(seconds / 60)
-    seconds -= minutes * 60
-
-    formatted = '{}:{}'.format(minutes, str(seconds).zfill(2))
-    if hours:
-        formatted = '{}:{}'.format(hours, minutes)
-
-    return formatted
-
-
 def make_time_tracking(position):
     return TimeTrack(
-        elapsed=format_seconds(position),
-        total=format_seconds(current_duration),
+        elapsed=utils.format_seconds(position),
+        total=utils.format_seconds(current_duration),
         progress_percentage=position * 100 / current_duration,
     )
 
@@ -63,21 +48,6 @@ def play_track(track):
     audio.play()
 
 
-def next_track(_=None):
-    set_track_by(1)
-
-
-def previous_track(_=None):
-    set_track_by(-1)
-
-
-def set_track_by(offset):
-    view = ui.win.current_view()
-    view.index += offset
-    view.refresh()
-    current_track.on_next(view.value)
-
-
 def rewind(offset):
     new_position = current_position + offset
     new_position = min(current_duration, max(0, new_position))
@@ -100,7 +70,7 @@ duration = ReplaySubject(1)
 end_of_track = Subject()
 
 current_track.subscribe(play_track)
-end_of_track.subscribe(next_track)
+end_of_track.subscribe(lambda _: logger.debug('END OF TRACK'))
 
 state.subscribe(set_state)
 progress.subscribe(set_position)

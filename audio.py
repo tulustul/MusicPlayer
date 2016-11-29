@@ -95,22 +95,23 @@ def play():
 def pause():
     global playing
     pipeline.set_state(Gst.State.PAUSED)
-    playback.state.on_next('paused')
     playing = False
+    playback.state.on_next('paused')
 
 
 def on_eos(*args):
     global playing
-    playback.end_of_track.on_next(None)
     playing = False
+    playback.end_of_track.on_next(None)
 
 
 def on_error():
     global playing
     logger.error('GST error :(')
+    pipeline.set_state(Gst.State.NULL)
+    playing = False
     errors.on_next(None)
     playback.end_of_track.on_next(None)
-    playing = False
 
 
 def on_duration_changed():

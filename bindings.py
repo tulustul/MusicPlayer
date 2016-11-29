@@ -2,7 +2,7 @@ from collections import defaultdict
 import logging
 
 
-from commands import registry
+import commands
 import commands_runner
 import config
 import keyboard
@@ -36,7 +36,7 @@ def init():
     for binding in config_keybindings:
         for key in binding['keys']:
             command_name = binding['command']
-            command = registry.get_by_name(command_name)
+            command = commands.registry.get_by_name(command_name)
             if command is None:
                 raise ValueError('Unknown command {}'.format(command_name))
             args = binding.get('args', [])

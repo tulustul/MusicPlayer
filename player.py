@@ -26,9 +26,9 @@ try:
     import audio
     import ui
     import bindings
-    import library
     import context
     import keyboard
+    import db
 except Exception as e:
     log_exception()
 else:
@@ -45,9 +45,10 @@ else:
 
             ui.init()
             audio.init(loop)
-            plugging.init(loop)
+            plugging.load_plugins(loop)
+            db.init()
             bindings.init()
-            library.init()
+            plugging.init_plugins()
             ui.initialize()
 
             context.push(config['default_context'])

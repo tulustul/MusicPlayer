@@ -24,15 +24,18 @@ notifier = None
 plugins_changes = Subject()
 
 
-def init_module(module):
-    if hasattr(module, 'init'):
-        module.init()
+def load_plugin(module):
     for standart_module in STANDARD_MODULES:
         module_name = '{}.{}'.format(module.__name__, standart_module)
         logger.info(module_name)
         logger.info(importlib.util.find_spec(module_name))
         if importlib.util.find_spec(module_name):
             importlib.import_module(module_name)
+
+
+def init_plugin(module):
+    if hasattr(module, 'init'):
+        module.init()
 
 
 def destroy_module(module):
@@ -55,9 +58,9 @@ def reload_plugin(module):
     for submodule in submodules:
         importlib.reload(submodule)
 
-    init_module(module)
+    init_plugin(module)
 
-    ui.reinitialize()
+    # ui.reinitialize()
 
 
 plugins_changes.subscribe(reload_plugin)
@@ -101,18 +104,23 @@ def init_plugins_watchers(loop):
         )
 
 
-def init(loop):
+def load_plugins(loop):
     for plugins_path in config['plugins_paths']:
         sys.path.append(plugins_path)
 
     for plugin_name in config['plugins']:
         logger.info('Loading plugin: {}'.format(plugin_name))
         module = importlib.import_module('plugins.{}'.format(plugin_name))
-        init_module(module)
+        load_plugin(module)
         modules.append(module)
 
     if config['debug']:
         init_plugins_watchers(loop)
+
+
+def init_plugins():
+    for module in modules:
+        init_plugin(module)
 
 
 def destroy():

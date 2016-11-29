@@ -7,14 +7,14 @@ import stream
 logger = logging.getLogger('ui')
 
 
-class Playlist(Table):
+class TracksView(Table):
 
     def __init__(self):
         super().__init__()
 
         self.columns = config['playlist']['columns']
 
-        stream.get('library.tracks').subscribe(self.set_tracks)
+        stream.get('playlist.tracks').subscribe(self.set_tracks)
 
     def set_tracks(self, tracks):
         logger.info('tracks: {}'.format(len(tracks)))

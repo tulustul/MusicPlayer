@@ -1,7 +1,7 @@
 from commands.decorator import command
 import commands_runner
 import context
-from . import palette_view
+from plugins import commands_palette
 
 
 @command()
@@ -12,4 +12,4 @@ def open_palette():
 @command()
 def run_command():
     context.pop()
-    commands_runner.run_text_command(palette_view.value)
+    commands_runner.run_text_command(commands_palette.palette_view.value)

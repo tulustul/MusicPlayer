@@ -1,5 +1,5 @@
 from ui.listview import List
-from commands import registry
+import commands
 
 
 class Palette(List):
@@ -9,7 +9,7 @@ class Palette(List):
 
         self._search_enabled = True
 
-        self.data = registry.get_names()
+        self.data = commands.registry.get_names()
 
     @property
     def value(self):

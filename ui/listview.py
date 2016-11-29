@@ -81,7 +81,7 @@ class List(Component):
 
     @property
     def list_size(self):
-        return self.lines - 1 if self.search_enabled else self.lines
+        return self.lines
 
     def go_by(self, offset):
         self.set_index(self.index + offset)
