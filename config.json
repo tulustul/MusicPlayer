@@ -18,7 +18,8 @@
         "errors_view",
         "commands_palette",
         "scan",
-        "track_scheduler"
+        "track_scheduler",
+        "tray_menu"
     ],
 
     "layout": {

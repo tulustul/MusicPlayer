@@ -20,13 +20,3 @@ def pause_track():
 @command()
 def rewind(offset):
     playback.rewind(offset)
-
-
-@command()
-def next_track():
-    playback.next_track()
-
-
-@command()
-def previous_track():
-    playback.previous_track()
