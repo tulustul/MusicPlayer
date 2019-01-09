@@ -1,3 +1,7 @@
+'''
+Simple test script printing color palette onto terminal.
+'''
+
 import curses
 
 

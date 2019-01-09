@@ -1,5 +1,8 @@
-__pycache__
+# editors
+.vscode
 *.sublime-project
 *.sublime-workspace
-*.db
-*.log
+
+# python
+__pycache__
+.mypy_cache

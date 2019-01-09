@@ -1,12 +1,13 @@
 {
     "theme": "afterglow",
-    "logFile": "player.log",
-    "logLevel": "DEBUG",
+    "db_file": "~/.config/music-player/music.db",
+    "log_file": "~/.config/music-player/player.log",
+    "log_level": "DEBUG",
     "input_interval": 0.02,
     "debug": true,
     "plugins_reload_debounce_time": 0.3,
     "plugins_paths": [
-        "~/.config/player/"
+        "~/.config/music-player/"
     ],
     "default_context": "playlist",
 
@@ -141,10 +142,20 @@
         {
             "keys": ["<arrowleft>"],
             "command": "rewind",
-            "args": [-30]
+            "args": [-10]
         },
         {
             "keys": ["<arrowright>"],
+            "command": "rewind",
+            "args": [10]
+        },
+        {
+            "keys": ["[>"],
+            "command": "rewind",
+            "args": [-30]
+        },
+        {
+            "keys": ["]"],
             "command": "rewind",
             "args": [30]
         },
@@ -155,6 +166,10 @@
         {
             "keys": ["n"],
             "command": "next_track"
+        },
+        {
+            "keys": ["r"],
+            "command": "random_track"
         },
         {
             "keys": ["/"],

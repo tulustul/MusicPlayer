@@ -40,7 +40,7 @@ else:
 
             loop = asyncio.get_event_loop()
 
-            if config['logLevel'] == 'DEBUG':
+            if config['log_level'] == 'DEBUG':
                 loop.set_debug(True)
 
             ui.init()

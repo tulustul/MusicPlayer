@@ -31,7 +31,7 @@ def init(loop_):
     GObject.threads_init()
     Gst.init(None)
 
-    pipeline = Gst.Pipeline('mypipeline')
+    pipeline = Gst.Pipeline()
 
     playbin = Gst.ElementFactory.make('playbin', None)
     if not playbin:

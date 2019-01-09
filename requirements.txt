@@ -3,3 +3,6 @@ sqlalchemy
 setproctitle
 mutagen
 pyinotify
+setproctitle
+PyGObject
+mypy

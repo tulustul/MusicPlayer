@@ -1,20 +1,21 @@
 from collections import defaultdict
 import logging
 
-
 import commands
 import commands_runner
 import config
 import keyboard
 import context
 
+
 logger = logging.getLogger('keybindings')
 
-general_keybindings = {}
-context_keybindings = defaultdict(dict)
+general_keybindings: dict = {}
+
+context_keybindings: dict = defaultdict(dict)
 
 
-def get_binding(key):
+def get_binding(key: str):
     logger.info(context.current_context.name)
     binding_context = context_keybindings.get(
         context.current_context.name,
@@ -22,7 +23,7 @@ def get_binding(key):
     return binding_context.get(key) or general_keybindings.get(key)
 
 
-def handle_keys(key):
+def handle_keys(key: str):
     logger.debug('key pressed: {}'.format(key))
     binding = get_binding(key)
     if binding:
