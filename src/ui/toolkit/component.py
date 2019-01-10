@@ -84,11 +84,6 @@ class Component(AbstractComponent):
         return component
 
     def draw(self):
-        # logger.debug(
-        #     '{} draw x:{} y:{} lines:{} cols:{}'
-        #     .format(self, self.x, self.y, self.lines, self.cols)
-        # )
-        self.win.clear()
         self.win.bkgd(' ', self.color)
         self.draw_content()
         self.win.refresh()
