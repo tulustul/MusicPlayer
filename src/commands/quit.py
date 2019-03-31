@@ -1,11 +1,12 @@
 import logging
 
 from .decorator import command
-import ui
+
+from ui.window import Window
 
 logger = logging.getLogger('commands')
 
 
 @command()
-def quit():
-    ui.win.quit()
+def quit(window: Window):
+    window.quit()

@@ -1,3 +1,4 @@
+commentjson
 rxpy
 sqlalchemy
 setproctitle
@@ -5,4 +6,9 @@ mutagen
 pyinotify
 setproctitle
 PyGObject
+
+# linters
 mypy
+
+# stubs
+sqlalchemy-stubs

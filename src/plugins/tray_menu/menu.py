@@ -2,6 +2,8 @@ import os
 import logging
 import threading
 
+import gi
+gi.require_version('AppIndicator3', '0.1')
 from gi.repository import AppIndicator3
 from gi.repository import Gtk
 
@@ -78,6 +80,7 @@ def run_gtk_loop():
 
 
 def init():
-    t = threading.Thread(target=run_gtk_loop)
-    t.daemon = True
-    t.start()
+    pass
+    # t = threading.Thread(target=run_gtk_loop)
+    # t.daemon = True
+    # t.start()

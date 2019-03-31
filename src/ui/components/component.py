@@ -38,7 +38,7 @@ class AbstractComponent(metaclass=ComponentMeta):
         component.desired_size = config.get('desired_size', 0)
         return component
 
-    def refresh(self):
+    def mark_for_redraw(self):
         self.redraw_requested = True
 
     def draw(self):

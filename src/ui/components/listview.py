@@ -1,13 +1,13 @@
 import logging
 
-from .colors import colors
-from .toolkit.component import Component
+from .component import Component
 from .input import Input
+from ..colors import colors
 
 logger = logging.getLogger('ui')
 
 
-class List(Component):
+class ListComponent(Component):
 
     def __init__(self):
         super().__init__()
@@ -16,6 +16,7 @@ class List(Component):
         self.filtered_data = []
 
         self.page = 0
+
         self.index = 0
 
         self.search_enabled = False
@@ -29,6 +30,8 @@ class List(Component):
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
         page_data = enumerate(page_data)
+
+        self.win.clear()
 
         for i, entry in page_data:
             if i + self.min_index == self.index:
@@ -58,7 +61,7 @@ class List(Component):
     def search_enabled(self, enabled):
         self._search_enabled = enabled
         self.set_size(self.x, self.y, self.cols, self.lines)
-        self.refresh()
+        self.mark_for_redraw()
 
     def set_size(self, x, y, cols, lines):
         # if self.search_enabled:
@@ -101,7 +104,7 @@ class List(Component):
     def set_index(self, new_index):
         self.index = max(0, min(new_index, len(self.filtered_data) - 1))
         self.page = int((self.index + 1) / self.list_size)
-        self.refresh()
+        self.mark_for_redraw()
 
     def filter_data(self, term):
         term = term.split()
@@ -112,7 +115,7 @@ class List(Component):
             ]
         else:
             self.filtered_data = self.data
-        self.refresh()
+        self.mark_for_redraw()
 
     def autocomplete_input(self):
         logger.warn(self.value)

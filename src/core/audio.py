@@ -9,9 +9,9 @@ gi.require_version('Gst', '1.0')
 from gi.repository import GObject
 from gi.repository import Gst
 
-from config import config
-from errors import errors
-import playback
+from core.config import config
+from core.errors import errors
+import core.playback
 
 playbin = None
 pipeline = None

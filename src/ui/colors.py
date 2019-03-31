@@ -1,7 +1,7 @@
 import logging
 import curses
 
-from config import theme
+from core.config import theme
 
 logger = logging.getLogger('colors')
 

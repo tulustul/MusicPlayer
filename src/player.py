@@ -1,84 +1,68 @@
-import asyncio
-import sys
-import traceback
-import logging
-import curses
+#! /usr/bin/env python3
+from dataclasses import dataclass
 
-import setproctitle
-
-from errors import errors
-
-logger = logging.getLogger('player')
-
-errors.subscribe(lambda e: logger.error(e))
+from core.app import App
+from ui.components.layout import Layout
+from ui.components.table import TableComponent
+from ui.components.label import LabelComponent
 
 
-def log_exception():
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    logger.error(''.join(traceback.format_exception(
-        exc_type, exc_value, exc_traceback,
-    )))
+def setup(app: App):
+    layout = app.window.root_component
+    layout.direction = Layout.Direction.vertical
 
+    list_component = TableComponent()
+    app.window.current_view = list_component
 
-try:
-    from config import config
-    import plugging
-    import audio
-    import ui
-    import bindings
-    import context
-    import keyboard
-    import db
-except Exception as e:
-    log_exception()
-else:
-    if __name__ == '__main__':
-        crashed = False
-        loop = None
-        try:
-            setproctitle.setproctitle('music-player')
+    # list_component.data = [f'option {i}' for i in range(100)]
+    from dataclasses import dataclass
 
-            loop = asyncio.get_event_loop()
+    @dataclass
+    class Data:
+        option: str
+        value: str
 
-            if config['log_level'] == 'DEBUG':
-                loop.set_debug(True)
+    list_component.data = [
+        Data(f'option {i}', f'value {i}')
+        for i in range(100)
+    ]
+    list_component.columns = [
+        {
+            "field": "option",
+            "name": "Option",
+            "priority": 1,
+            "size": 10,
+        },
+        {
+            "field": "value",
+            "name": "Value",
+            "priority": 2,
+            "size": 20,
+        },
+        {
+            "field": "__class__",
+            "name": "class",
+            "priority": 10,
+        },
+    ]
 
-            ui.init()
-            audio.init(loop)
-            plugging.load_plugins(loop)
-            db.init()
-            bindings.init()
-            plugging.init_plugins()
-            ui.initialize()
+    layout.add(list_component)
+    layout.add(LabelComponent('2'))
 
-            context.push(config['default_context'])
+    layout2 = Layout()
+    layout2.add(LabelComponent('3'))
+    layout2.add(LabelComponent('4'))
+    layout2.add(LabelComponent('5'))
 
-            stop = False
-            while not stop:
-                try:
-                    stop = True
-                    loop.run_until_complete(ui.win.process_input())
-                except KeyboardInterrupt:
-                    stop = False
-                    keyboard.raw_keys.on_next(curses.KEY_EXIT)
-        except Exception as e:
-            crashed = True
-            log_exception()
-        finally:
-            plugging.destroy()
-            ui.destroy()
-            audio.destroy()
-            for task in asyncio.Task.all_tasks():
-                task.cancel()
-            try:
-                if loop:
-                    loop.run_until_complete(
-                        asyncio.gather(*asyncio.Task.all_tasks())
-                    )
-            except asyncio.CancelledError:
-                pass
-            finally:
-                if loop:
-                    loop.close()
-                if crashed:
-                    sys.exit(1)
+    l = LabelComponent('bottom')
+    l.desired_size = 1
+
+    layout.add(layout2)
+    layout.add(l)
+
+    # app.window.set_root_component(layout)
+
+if __name__ == '__main__':
+    app = App()
+    setup(app)
+    app.run_forever()

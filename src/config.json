@@ -1,201 +1,197 @@
 {
-    "theme": "afterglow",
-    "db_file": "~/.config/music-player/music.db",
-    "log_file": "~/.config/music-player/player.log",
-    "log_level": "DEBUG",
-    "input_interval": 0.02,
-    "debug": true,
-    "plugins_reload_debounce_time": 0.3,
-    "plugins_paths": [
-        "~/.config/music-player/"
-    ],
-    "default_context": "playlist",
+  "theme": "afterglow",
+  "db_file": "~/.config/music-player/music.db",
+  "log_file": "~/.config/music-player/player.log",
+  "log_level": "DEBUG",
+  "input_interval": 0.02,
+  "debug": true,
+  "plugins_reload_debounce_time": 0.3,
+  "plugins_paths": [
+    "~/.config/music-player/"
+  ],
+  "default_context": "playlist",
 
-    "plugins": [
-        "test_plug",
-        "bar",
-        "library",
-        "playlist",
-        "errors_view",
-        "commands_palette",
-        "scan",
-        "track_scheduler",
-        "tray_menu"
-    ],
+  "plugins": [
+    "test_plug",
+    "bar"
+    // "library",
+    // "playlist",
+    // "errors_view",
+    // "commands_palette",
+    // "scan",
+    // "track_scheduler",
+    // "tray_menu",
+    // "search"
+  ],
 
-    "layout": {
+  "cloud": [],
+
+  "layout": {
+    "class": "Layout",
+    "direction": "vertical",
+    "components": [
+      {
         "class": "Layout",
-        "direction": "vertical",
+        "direction": "horizontal",
         "components": [
-            {
-                "class": "Layout",
-                "direction": "horizontal",
-                "components": [
-                    {
-                        "class": "Layout",
-                        "id": "mainview",
-                        "color": "test2"
-                    }
-                ]
-            },
-            {
-                "class": "Layout",
-                "id": "bottomview",
-                "desired_size": 5
-            },
-            {
-                "class": "Bar",
-                "id": "bar",
-                "desired_size": 1,
-                "color": "bar"
-            }
+          {
+            "class": "Layout",
+            "id": "mainview",
+            "color": "test2"
+          },
+          {
+            "class": "Layout",
+            "id": "sidebar",
+            "color": "test2"
+          }
         ]
-    },
-
-    "playlist": {
-        "open_in": "mainview",
-        "columns": [
-            {
-                "field": "track_number",
-                "name": "NO",
-                "priority": 1,
-                "size": 3
-            },
-            {
-                "field": "title",
-                "name": "TITLE",
-                "priority": 1
-            },
-            {
-                "field": "album",
-                "name": "ALBUM",
-                "priority": 1
-            },
-            {
-                "field": "artist",
-                "name": "ARTIST",
-                "priority": 1
-            },
-            {
-                "field": "length",
-                "name": "LENGTH",
-                "priority": 1,
-                "size": 6,
-                "format": "time"
-            }
-        ]
-    },
-
-    "palette": {
-        "open_in": "bottomview"
-    },
-
-    "errors": {
-        "open_in": "bottomview"
-    },
-
-    "keybindings": [
-        {
-            "keys": ["q"],
-            "command": "quit"
-        },
-        {
-            "keys": ["<home>"],
-            "command": "navigate_list_top"
-        },
-        {
-            "keys": ["<end>"],
-            "command": "navigate_list_bottom"
-        },
-        {
-            "keys": ["<pagedown>"],
-            "command": "navigate_next_page"
-        },
-        {
-            "keys": ["<pageup>"],
-            "command": "navigate_previous_page"
-        },
-        {
-            "keys": ["<arrowdown>"],
-            "command": "navigate_list_by",
-            "args": [1]
-        },
-        {
-            "keys": ["<arrowup>"],
-            "command": "navigate_list_by",
-            "args": [-1]
-        },
-        {
-            "keys": ["<arrowright>"],
-            "command": "autocomplete_input"
-        },
-        {
-            "keys": ["<enter>"],
-            "command": "play_track",
-            "context": "playlist"
-        },
-        {
-            "keys": ["<space>"],
-            "command": "pause_track",
-            "context": "playlist"
-        },
-        {
-            "keys": ["<arrowleft>"],
-            "command": "rewind",
-            "args": [-10]
-        },
-        {
-            "keys": ["<arrowright>"],
-            "command": "rewind",
-            "args": [10]
-        },
-        {
-            "keys": ["[>"],
-            "command": "rewind",
-            "args": [-30]
-        },
-        {
-            "keys": ["]"],
-            "command": "rewind",
-            "args": [30]
-        },
-        {
-            "keys": ["p"],
-            "command": "previous_track"
-        },
-        {
-            "keys": ["n"],
-            "command": "next_track"
-        },
-        {
-            "keys": ["r"],
-            "command": "random_track"
-        },
-        {
-            "keys": ["/"],
-            "command": "search"
-        },
-        {
-            "keys": ["<enter>"],
-            "command": "commit_search",
-            "context": "search"
-        },
-        {
-            "keys": [":"],
-            "command": "open_palette"
-        },
-        {
-            "keys": ["<enter>"],
-            "command": "run_command",
-            "context": "palette"
-        },
-        {
-            "keys": ["<esc>", "<interrupt>"],
-            "command": "pop_context"
-        },
-        {
-            "keys": ["<resize>"],
-            "command": "refresh"
-        }
+      },
+      {
+        "class": "Layout",
+        "id": "toolbar",
+        "desired_size": 5
+      },
+      {
+        "class": "Bar",
+        "id": "bar",
+        "desired_size": 1,
+        "color": "bar"
+      }
     ]
+  },
+
+  "playlist": {
+    "open_in": "mainview",
+    "columns": [
+      {
+        "field": "track_number",
+        "name": "NO",
+        "priority": 1,
+        "size": 3
+      },
+      {
+        "field": "title",
+        "name": "TITLE",
+        "priority": 1
+      },
+      {
+        "field": "album",
+        "name": "ALBUM",
+        "priority": 1
+      },
+      {
+        "field": "artist",
+        "name": "ARTIST",
+        "priority": 1
+      },
+      {
+        "field": "length",
+        "name": "LENGTH",
+        "priority": 1,
+        "size": 6,
+        "format": "time"
+      }
+    ]
+  },
+
+  "keybindings": [
+    {
+      "keys": ["q"],
+      "command": "quit"
+    },
+    {
+      "keys": ["<home>"],
+      "command": "navigate_list_top"
+    },
+    {
+      "keys": ["<end>"],
+      "command": "navigate_list_bottom"
+    },
+    {
+      "keys": ["<pagedown>"],
+      "command": "navigate_next_page"
+    },
+    {
+      "keys": ["<pageup>"],
+      "command": "navigate_previous_page"
+    },
+    {
+      "keys": ["<arrowdown>"],
+      "command": "navigate_list_by",
+      "args": [1]
+    },
+    {
+      "keys": ["<arrowup>"],
+      "command": "navigate_list_by",
+      "args": [-1]
+    },
+    {
+      "keys": ["<arrowright>"],
+      "command": "autocomplete_input"
+    },
+    {
+      "keys": ["<enter>"],
+      "command": "play_track",
+      "context": "playlist"
+    },
+    {
+      "keys": ["<space>"],
+      "command": "pause_track",
+      "context": "playlist"
+    },
+    {
+      "keys": ["<arrowleft>"],
+      "command": "rewind",
+      "args": [-10]
+    },
+    {
+      "keys": ["<arrowright>"],
+      "command": "rewind",
+      "args": [10]
+    },
+    {
+      "keys": ["[>"],
+      "command": "rewind",
+      "args": [-30]
+    },
+    {
+      "keys": ["]"],
+      "command": "rewind",
+      "args": [30]
+    },
+    {
+      "keys": ["p"],
+      "command": "previous_track"
+    },
+    {
+      "keys": ["n"],
+      "command": "next_track"
+    },
+    {
+      "keys": ["r"],
+      "command": "random_track"
+    },
+    {
+      "keys": ["/"],
+      "command": "search",
+      "args": ["kaczmarski"]
+    },
+    {
+      "keys": [":"],
+      "command": "open_palette"
+    },
+    {
+      "keys": ["<enter>"],
+      "command": "run_command",
+      "context": "palette"
+    },
+    {
+      "keys": ["<esc>", "<interrupt>"],
+      "command": "pop_context"
+    },
+    {
+      "keys": ["<resize>"],
+      "command": "refresh"
+    }
+  ]
 }

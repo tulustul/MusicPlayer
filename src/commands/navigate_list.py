@@ -1,32 +1,33 @@
+from ui.components.listview import ListComponent
+
 from .decorator import command
-import ui
 
 
 @command()
-def navigate_list_top():
-    ui.win.current_view.go_top()
+def navigate_list_top(list_component: ListComponent):
+    list_component.go_top()
 
 
 @command()
-def navigate_list_bottom():
-    ui.win.current_view.go_bottom()
+def navigate_list_bottom(list_component: ListComponent):
+    list_component.go_bottom()
 
 
 @command()
-def navigate_list_by(offset):
-    ui.win.current_view.go_by(offset)
+def navigate_list_by(list_component: ListComponent, offset: int):
+    list_component.go_by(offset)
 
 
 @command()
-def navigate_next_page():
-    ui.win.current_view.next_page()
+def navigate_next_page(list_component: ListComponent):
+    list_component.next_page()
 
 
 @command()
-def navigate_previous_page():
-    ui.win.current_view.previous_page()
+def navigate_previous_page(list_component: ListComponent):
+    list_component.previous_page()
 
 
 @command()
-def autocomplete_input():
-    ui.win.current_view.autocomplete_input()
+def autocomplete_input(list_component: ListComponent):
+    list_component.autocomplete_input()

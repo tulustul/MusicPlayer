@@ -1,17 +1,21 @@
-from collections import namedtuple
-
-Command = namedtuple('Command', [
-    'func',
-    'name',
-    'display_name',
-    'visible_in_palette',
-])
-
-by_name = {}
-by_display_name = {}
+from dataclasses import dataclass
+from typing import Dict
+from types import FunctionType
 
 
-def register(func, name, display_name, visible_in_palette):
+@dataclass
+class Command:
+    func: FunctionType
+    name: str
+    display_name: str
+    visible_in_palette: bool
+
+
+by_name: Dict[str, Command] = {}
+by_display_name: Dict[str, Command] = {}
+
+
+def register(func: FunctionType, name: str, display_name: str, visible_in_palette: bool):
     command = Command(
         func=func,
         name=name,

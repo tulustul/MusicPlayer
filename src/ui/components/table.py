@@ -1,10 +1,10 @@
 import math
 import logging
 
-from config import theme
-import utils
-from .listview import List
-from .colors import colors
+from core import config, utils
+
+from .listview import ListComponent
+from ..colors import colors
 
 logger = logging.getLogger('ui')
 
@@ -16,7 +16,7 @@ def default_format(value):
     return str(value or '')
 
 
-class Table(List):
+class TableComponent(ListComponent):
 
     def __init__(self):
         self._columns = []
@@ -26,13 +26,15 @@ class Table(List):
         self.borders_selected_color = colors['table-borders-selected']
         self.header_borders = colors['table-header-borders']
 
-        self.border = theme['strings']['border-vertical']
+        self.border = config.theme['strings']['border-vertical']
 
         super().__init__()
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
         page_data = list(enumerate(page_data))
+
+        self.win.clear()
 
         x = 0
         for column in self.columns:

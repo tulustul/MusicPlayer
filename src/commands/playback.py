@@ -1,11 +1,10 @@
 import logging
 
 from .decorator import command
-import playback
+import core.playback
 import ui
 
 logger = logging.getLogger('commands')
-
 
 @command()
 def play_track():

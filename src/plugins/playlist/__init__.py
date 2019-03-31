@@ -18,7 +18,7 @@ def init():
 
     stream.register('playlist.tracks', ReplaySubject(1))
     playlist_view = Playlist()
-    playlist_context = context.register('playlist')
+    # playlist_context = context.register('playlist')
     playlist_context.on_enter.subscribe(show_playlist)
 
 

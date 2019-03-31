@@ -2,12 +2,15 @@ import os
 import asyncio
 import curses
 import logging
+import typing
+
+from core import keyboard
+from core.config import config
 
 from . import colors
-from .toolkit.renderer import Renderer
-from .toolkit.layout import Layout
-from config import config
-import keyboard
+from .renderer import Renderer
+from .components.component import Component
+from .components.layout import Layout
 
 logger = logging.getLogger('ui')
 
@@ -21,29 +24,22 @@ class Window:
 
         self.views_activity = []
 
-        self.current_view = None
+        self.current_view: Optional[Component] = None
 
         self.screen = None
-
-        self.renderer = None
 
         self.create()
 
         colors.init()
 
-    def initialize_view(self):
+        self.root_component = Layout()
+        self.root_component.set_size(0, 0, curses.COLS, curses.LINES)
 
-        self.main_component = Layout.make_from_config(config['layout'])
-        self.renderer = Renderer(self.screen, self.main_component)
-
-        # self.sidebar = self.main_component.get_by_id('sidebar')
-        self.mainview = self.main_component.get_by_id('mainview')
+        self.renderer = Renderer(self.screen, self.root_component)
 
         self.input_mode = False
 
         self.running = True
-
-        self.refresh()
 
     def create(self):
         self.screen = curses.initscr()
@@ -89,17 +85,17 @@ class Window:
     def quit(self):
         self.running = False
 
-    def refresh(self):
-        if self.renderer:
-            self.renderer.redraw()
+    # def refresh(self):
+    #     if self.renderer:
+    #         self.renderer.redraw()
 
-    def open_view_in(self, view, container_id):
-        container = self.main_component.get_by_id(container_id)
-        self.current_view = view
-        if view not in container.childs:
-            container.add(view)
+    # def open_view_in(self, view, container_id):
+    #     container = self.root_component.get_by_id(container_id)
+    #     self.current_view = view
+    #     if view not in container.childs:
+    #         container.add(view)
 
-    def remove_view_from(self, view, container_id):
-        container = self.main_component.get_by_id(container_id)
-        if view in container.childs:
-            container.remove(view)
+    # def remove_view_from(self, view, container_id):
+    #     container = self.root_component.get_by_id(container_id)
+    #     if view in container.childs:
+    #         container.remove(view)

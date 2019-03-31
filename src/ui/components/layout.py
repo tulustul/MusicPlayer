@@ -1,8 +1,10 @@
-import logging
+from decimal import Decimal, ROUND_HALF_UP
 from enum import Enum
+import logging
+from typing import List, Tuple
 
+from core.errors import errors
 from .component import AbstractComponent, class_registry
-from errors import errors
 import ui
 
 logger = logging.getLogger(name='ui')
@@ -36,22 +38,22 @@ class Layout(AbstractComponent):
         return layout
 
     def refresh(self):
-        super().refresh()
+        self.mark_for_redraw()
         self.calculate_sizes()
 
-    def add(self, component):
+    def add(self, component: AbstractComponent):
         self.childs.append(component)
         component.parent = self
-        # self.calculate_sizes()
+        self.calculate_sizes()
         # self.refresh()
-        ui.win.refresh()
+        # ui.win.refresh()
 
-    def remove(self, component):
+    def remove(self, component: AbstractComponent):
         self.childs.remove(component)
         component.parent = None
-        # self.calculate_sizes()
+        self.calculate_sizes()
         # self.refresh()
-        ui.win.refresh()
+        # ui.win.refresh()
 
     def clear(self):
         for child in self.childs:
@@ -72,35 +74,41 @@ class Layout(AbstractComponent):
         else:
             logger.error('Unknown layout type: {}'.format(self.direction))
 
-        current_offset = 0
+        visible_childs = self.get_visible_childs()
+
+        fluent_childs = [c for c in visible_childs if not c.desired_size]
 
         fluent_size = total_size - sum(
-            component.desired_size for component in self.visible_childs
+            component.desired_size for component in visible_childs
             if component.desired_size
         )
 
-        logger.info('fluent_size: {}'.format(fluent_size))
+        current_offset = Decimal(0)
 
-        for component in self.visible_childs:
-            size = component.desired_size or max(fluent_size, 0)
+        for component in visible_childs:
+            decimal_size = Decimal(
+                component.desired_size or
+                max(fluent_size / len(fluent_childs), 0)
+            )
+            offset = int(current_offset.to_integral_value(ROUND_HALF_UP))
+            size = int(decimal_size.to_integral_value(ROUND_HALF_UP))
+
+            current_offset += decimal_size
+
+            size += int(
+                current_offset.to_integral_value(ROUND_HALF_UP)
+            ) - offset - size
 
             if vertical:
-                component.set_size(
-                    self.x, self.y + current_offset, self.cols, size,
-                )
+                component.set_size(self.x, self.y + offset, self.cols, size)
             else:
-                component.set_size(
-                    self.x + current_offset, self.y, size, self.lines,
-                )
-
-            current_offset += size
+                component.set_size(self.x + offset, self.y, size, self.lines)
 
         for child_layout in self.child_layouts:
             child_layout.calculate_sizes()
 
-    @property
-    def visible_childs(self):
-        return (child for child in self.childs if child.visible)
+    def get_visible_childs(self):
+        return [child for child in self.childs if child.visible]
 
     @property
     def child_layouts(self):
@@ -110,7 +118,7 @@ class Layout(AbstractComponent):
         )
 
     def draw(self):
-        for child in self.visible_childs:
+        for child in self.get_visible_childs():
             child.draw()
 
     def get_by_id(self, component_id):
@@ -129,13 +137,17 @@ class Layout(AbstractComponent):
 
     @property
     def visible(self):
-        return self._visible and list(self.visible_childs)
+        return self._visible and list(self.get_visible_childs())
+
+    @visible.setter
+    def visible(self, visible):
+        self._visible = visible
 
     @property
     def desired_size(self):
         childs_desired_size = sum(
             c.desired_size or self._desired_size
-            for c in self.visible_childs
+            for c in self.get_visible_childs()
         )
         return min(self._desired_size, childs_desired_size)
 

@@ -1,29 +1,30 @@
-import json
 import logging
 import os
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, Union
 
+import commentjson
 from mypy_extensions import TypedDict
 
 Keybinding = TypedDict('Keybinding', {
     'keys': Sequence[str],
     'command': str,
     'context': str,
+    'args': Sequence[Union[float, int, str, list, dict]],
 })
 
 home = Path.home()
 Path(f'{home}/.config/music-player').mkdir(parents=True, exist_ok=True)
 
-path = os.path.dirname(__file__)
+path = os.path.dirname(__file__) + '/..'
 
 with open(f'{path}/config.json') as config_file:
-    config: dict = json.loads(config_file.read())
+    config: dict = commentjson.loads(config_file.read())
 
 theme = config['theme']
 
 with open(f'{path}/themes/{theme}.json') as theme_file:
-    theme = json.loads(theme_file.read())
+    theme = commentjson.loads(theme_file.read())
 
 logging.basicConfig(
     filename=Path(config['log_file']).expanduser(),

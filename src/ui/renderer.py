@@ -1,27 +1,26 @@
 import logging
 
-from .layout import Layout
+from .components.layout import Layout
 
 logger = logging.getLogger('ui.toolkit')
 
 
 class Renderer:
 
-    def __init__(self, screen, main_component):
+    def __init__(self, screen, root_component):
         self.screen = screen
-        self.main_component = main_component
+        self.root_component = root_component
 
     def redraw(self):
-        self.screen.refresh()
         y, x = self.screen.getmaxyx()
-        self.main_component.lines = y
-        self.main_component.cols = x
-        self.main_component.calculate_sizes()
-        self.main_component.draw()
+        self.root_component.lines = y
+        self.root_component.cols = x
+        self.root_component.calculate_sizes()
+        self.root_component.draw()
 
     def update(self):
         self.screen.refresh()
-        for component in self.get_components_to_draw(self.main_component):
+        for component in self.get_components_to_draw(self.root_component):
             component.draw()
 
     def get_components_to_draw(self, component):

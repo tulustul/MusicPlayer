@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger('stream')
 
-streams = {}
+streams: dict = {}
 
 
 def register(name, stream):

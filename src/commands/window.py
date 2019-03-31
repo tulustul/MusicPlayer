@@ -1,7 +1,7 @@
 import logging
 
 from .decorator import command
-import context
+from core import context
 
 logger = logging.getLogger('commands')
 

@@ -1,10 +1,12 @@
 import logging
 
-from config import theme
-from ui.toolkit.component import Component
+from ui.components.component import Component
 from ui.colors import colors
-import playback
-import context
+from core.config import theme
+from core import (
+    playback,
+    context,
+)
 
 logger = logging.getLogger('ui')
 
@@ -75,7 +77,7 @@ class Bar(Component):
     def on_track_changed(self, track):
         if self.track != track:
             self.track = track
-            self.refresh()
+            self.mark_for_redraw()
 
     def on_time_track_changed(self, time_track):
         if (
@@ -83,16 +85,16 @@ class Bar(Component):
             self.time_track.elapsed != time_track.elapsed
         ):
             self.time_track = time_track
-            self.refresh()
+            self.mark_for_redraw()
 
     def on_state_changed(self, state):
         if self.state != state:
             self.state = state
-            self.refresh()
+            self.mark_for_redraw()
 
     def on_context_changed(self, context):
         self.context_name = context.name
-        self.refresh()
+        self.mark_for_redraw()
 
     @property
     def track_name(self):

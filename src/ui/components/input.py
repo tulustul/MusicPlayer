@@ -2,9 +2,10 @@ import curses
 
 from rx.subjects import Subject
 
-from .colors import colors
-from .toolkit.component import Component
-from keyboard import raw_keys
+from core.keyboard import raw_keys
+
+from .component import Component
+from ..colors import colors
 
 
 class Input(Component):
@@ -19,7 +20,7 @@ class Input(Component):
 
         self.commit = Subject()
 
-        self.set_value('scan_local_files /run/media/disk/Muzyka')
+        # self.set_value('scan_local_files /run/media/disk/Muzyka')
         # self.set_value('scan_local_files /mnt/toshiba/Filmy')
 
         self.selected_color = colors['selected']

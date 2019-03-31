@@ -4,9 +4,8 @@ import logging
 
 from rx.subjects import Subject, ReplaySubject
 
-import audio
+from core import audio, utils
 import ui
-import utils
 
 logger = logging.getLogger('playback')
 

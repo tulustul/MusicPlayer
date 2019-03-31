@@ -1,7 +1,11 @@
-from .decorator import command
+import asyncio
+
 import ui
+
+from .decorator import command
 
 
 @command()
-def refresh():
+async def refresh():
+    await asyncio.sleep(1)
     ui.win.refresh()

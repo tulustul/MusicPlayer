@@ -2,12 +2,14 @@ import os
 import sys
 import logging
 import importlib
+from typing import List
+from types import ModuleType
 
 import pyinotify
 from rx.subjects import Subject
 
 import ui
-from config import config
+from core.config import config
 
 logger = logging.getLogger('plugins')
 
@@ -17,7 +19,7 @@ STANDARD_MODULES = [
     'commands',
 ]
 
-modules = []
+modules: List[ModuleType] = []
 
 notifier = None
 
