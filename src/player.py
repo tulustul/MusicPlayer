@@ -1,10 +1,16 @@
 #! /usr/bin/env python3
+import asyncio
 from dataclasses import dataclass
+import logging
 
 from core.app import App
 from ui.components.layout import Layout
 from ui.components.table import TableComponent
 from ui.components.label import LabelComponent
+from ui.components.progress import ProgressComponent
+from ui.components.input import InputComponent
+
+logger = logging.getLogger('player')
 
 
 def setup(app: App):
@@ -46,21 +52,49 @@ def setup(app: App):
         },
     ]
 
-    layout.add(list_component)
-    layout.add(LabelComponent('2'))
+    sidebar = LabelComponent('sidebar')
+    sidebar.desired_size = 30
 
     layout2 = Layout()
-    layout2.add(LabelComponent('3'))
-    layout2.add(LabelComponent('4'))
-    layout2.add(LabelComponent('5'))
-
-    l = LabelComponent('bottom')
-    l.desired_size = 1
+    layout2.direction = Layout.Direction.horizontal
+    layout2.add(sidebar)
+    layout2.add(list_component)
 
     layout.add(layout2)
-    layout.add(l)
 
-    # app.window.set_root_component(layout)
+    commands = LabelComponent('commands')
+    commands.desired_size = 6
+
+    layout.add(commands)
+
+    progress_component = ProgressComponent()
+    progress_component.set_text('progress', '')
+
+    input_component = InputComponent()
+    input_component.visible = False
+
+    components = [
+        input_component,
+        progress_component,
+        LabelComponent('errors'),
+        LabelComponent('playback'),
+    ]
+    for c in components:
+        c.desired_size = 1
+        layout.add(c)
+
+    app.window.input_component = input_component
+
+    asyncio.get_event_loop().create_task(test_progress(progress_component))
+
+
+async def test_progress(progress_component: ProgressComponent):
+    while True:
+        await asyncio.sleep(0.2)
+        progress_component.progress += 0.01
+        if progress_component.progress > 1:
+            progress_component.progress = 0
+
 
 if __name__ == '__main__':
     app = App()

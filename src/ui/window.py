@@ -11,6 +11,7 @@ from . import colors
 from .renderer import Renderer
 from .components.component import Component
 from .components.layout import Layout
+from .components.input import InputComponent
 
 logger = logging.getLogger('ui')
 
@@ -34,6 +35,8 @@ class Window:
 
         self.root_component = Layout()
         self.root_component.set_size(0, 0, curses.COLS, curses.LINES)
+
+        self.input_component: InputComponent = None
 
         self.renderer = Renderer(self.screen, self.root_component)
 
@@ -84,6 +87,17 @@ class Window:
 
     def quit(self):
         self.running = False
+
+    def input(self):
+        # if not self.input_component:
+        #     return
+
+        self.input_component.mark_for_redraw()
+        self.input_component.visible = True
+        # self.input_mode = True
+
+        # yield '-'
+
 
     # def refresh(self):
     #     if self.renderer:

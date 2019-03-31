@@ -3,7 +3,7 @@ import curses
 
 from ui.colors import colors
 
-logger = logging.getLogger('ui.toolkit')
+logger = logging.getLogger('ui')
 
 class_registry = {}
 
@@ -60,6 +60,8 @@ class AbstractComponent(metaclass=ComponentMeta):
     @visible.setter
     def visible(self, visible):
         self._visible = visible
+        if self.parent:
+            self.parent.refresh()
 
     @property
     def desired_size(self):

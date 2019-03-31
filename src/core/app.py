@@ -58,7 +58,7 @@ class App:
                 self.loop.set_debug(True)
 
             # audio.init(loop)
-            # plugging.load_plugins(loop)
+            plugging.load_plugins(self.loop)
             # db.init()
             self.window = Window()
             self.injector = dependency_injection.Injector()
@@ -66,7 +66,7 @@ class App:
             core_providers.register_core_providers(self.injector, self.window)
             commander = commands_runner.CommandsRunner(self.injector)
             binding_controller = bindings.BindingsController(commander)
-            # plugging.init_plugins()
+            plugging.init_plugins()
 
             context.push(config['default_context'])
         except Exception as e:
@@ -92,7 +92,7 @@ class App:
             self.destroy()
 
     def destroy(self):
-        # plugging.destroy()
+        plugging.destroy()
         if self.window:
             self.window.destroy()
         # audio.destroy()

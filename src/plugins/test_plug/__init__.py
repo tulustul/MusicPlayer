@@ -1,17 +1,12 @@
 import logging
 
-from . import submodule
-
-logger = logging.getLogger('test')
-
-REQUIRE = []
+logger = logging.getLogger('plugins.test')
 
 NAME = 'test plugisasdasq'
 
 
 def init():
-    logger.info(submodule.test())
-
+    ...
 
 def destroy():
     ...

@@ -1,4 +1,5 @@
 import curses
+import logging
 
 from rx.subjects import Subject
 
@@ -7,8 +8,10 @@ from core.keyboard import raw_keys
 from .component import Component
 from ..colors import colors
 
+logger = logging.getLogger('ui')
 
-class Input(Component):
+
+class InputComponent(Component):
 
     def __init__(self):
         super().__init__()
@@ -20,7 +23,7 @@ class Input(Component):
 
         self.commit = Subject()
 
-        # self.set_value('scan_local_files /run/media/disk/Muzyka')
+        self.set_value('scan_local_files /run/media/disk/Muzyka')
         # self.set_value('scan_local_files /mnt/toshiba/Filmy')
 
         self.selected_color = colors['selected']
@@ -41,6 +44,7 @@ class Input(Component):
         )
 
     def handle_key(self, key):
+        logger.info(key)
         if not self.win:
             return
 
@@ -63,14 +67,18 @@ class Input(Component):
             self.cursor = 0
         elif key == curses.KEY_END:
             self.cursor = len(self.text) - 1
-        elif isinstance(key, str):
-            self.text.insert(self.cursor, key)
-            self.cursor += 1
+        else:
+            key = chr(key)
+            if isinstance(key, str):
+                self.text.insert(self.cursor, key)
+                self.cursor += 1
 
         # self.win.clear()
-        # self.refresh()
+        self.mark_for_redraw()
 
         self.value.on_next(self.text_value)
+
+        logger.info(self.text_value)
 
     @property
     def text_value(self):
@@ -80,4 +88,4 @@ class Input(Component):
         self.text = list(value + ' ')
         self.cursor = len(self.text) - 1
         if self.win:
-            self.refresh()
+            self.mark_for_redraw()

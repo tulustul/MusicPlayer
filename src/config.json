@@ -192,6 +192,10 @@
     {
       "keys": ["<resize>"],
       "command": "refresh"
+    },
+    {
+      "keys": ["t"],
+      "command": "test_input"
     }
   ]
 }

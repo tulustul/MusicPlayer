@@ -49,11 +49,11 @@ class TableComponent(ListComponent):
                 column_size, self.headers_color,
             )
 
-            # if not is_last_column:
-            #     self.win.addstr(
-            #         0, x + column['real_size'],
-            #         self.border, self.header_borders,
-            #     )
+            if not is_last_column:
+                self.win.addstr(
+                    0, x + column['real_size'],
+                    self.border, self.header_borders,
+                )
 
             formatter = FORMATS.get(column.get('format'), default_format)
 
@@ -77,8 +77,8 @@ class TableComponent(ListComponent):
 
             x += column['real_size'] + len(self.border)
 
-        if self.search_enabled:
-            self.search_box.refresh()
+        # if self.search_enabled:
+        #     self.search_box.refresh()
 
     # @property
     # def min_index(self):

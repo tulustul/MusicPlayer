@@ -1,7 +1,7 @@
 import logging
 
 from .component import Component
-from .input import Input
+from .input import InputComponent
 from ..colors import colors
 
 logger = logging.getLogger('ui')
@@ -21,9 +21,9 @@ class ListComponent(Component):
 
         self.search_enabled = False
 
-        self.search_box = Input()
+        # self.search_box = InputComponent()
 
-        self.search_box.value.subscribe(self.filter_data)
+        # self.search_box.value.subscribe(self.filter_data)
 
         self.selected_color = colors['selected']
 
@@ -41,8 +41,8 @@ class ListComponent(Component):
 
             self.win.addstr(i, 0, entry, color)
 
-        if self.search_enabled:
-            self.search_box.refresh()
+        # if self.search_enabled:
+        #     self.search_box.refresh()
 
     @property
     def data(self):
@@ -117,6 +117,6 @@ class ListComponent(Component):
             self.filtered_data = self.data
         self.mark_for_redraw()
 
-    def autocomplete_input(self):
-        logger.warn(self.value)
-        self.search_box.set_value(self.value)
+    # def autocomplete_input(self):
+    #     logger.warn(self.value)
+    #     self.search_box.set_value(self.value)

@@ -53,7 +53,6 @@ class BindingsController:
 
 
     def handle_keys(self, key: str):
-        logger.debug('key pressed: {}'.format(key))
         binding = self.get_binding(key)
         if binding:
             command, args = binding
