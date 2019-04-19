@@ -1,8 +1,8 @@
-import os
 import asyncio
 import curses
 import logging
-import typing
+from typing import Dict, Optional, List
+import os
 
 from core import keyboard
 from core.config import config
@@ -12,20 +12,22 @@ from .renderer import Renderer
 from .components.component import Component
 from .components.layout import Layout
 from .components.input import InputComponent
+from .components.label import LabelComponent
+from .rect import Rect
 
-logger = logging.getLogger('ui')
+logger = logging.getLogger('ui.window')
 
 os.environ.setdefault('ESCDELAY', '25')
 
 
 class Window:
 
-    def __init__(self):
-        self.views = {}
+    def __init__(self, loop: asyncio.AbstractEventLoop):
+        self.loop = loop
 
-        self.views_activity = []
+        self.components: Dict[object, Component] = {}
 
-        self.current_view: Optional[Component] = None
+        self.active_component_stack: List[Component] = []
 
         self.screen = None
 
@@ -33,12 +35,15 @@ class Window:
 
         colors.init()
 
+        self.renderer = Renderer()
+
         self.root_component = Layout()
-        self.root_component.set_size(0, 0, curses.COLS, curses.LINES)
+        self.root_component.renderer = self.renderer
+        self.root_component.set_rect(Rect(0, 0, curses.COLS, curses.LINES))
 
-        self.input_component: InputComponent = None
+        self.input_component: Optional[InputComponent] = None
 
-        self.renderer = Renderer(self.screen, self.root_component)
+        self.notifications_layout: Optional[Layout] = None
 
         self.input_mode = False
 
@@ -51,12 +56,14 @@ class Window:
         curses.cbreak()
         curses.curs_set(0)
         self.screen.keypad(1)
-        self.screen.nodelay(True)
+        self.screen.nodelay(1)
 
         try:
             curses.start_color()
         except:
             pass
+
+        self.screen.refresh()
 
     def destroy(self):
         curses.echo()
@@ -74,42 +81,52 @@ class Window:
             ch = 0
             while ch != -1:
                 try:
-                    if self.input_mode:
-                        ch = self.screen.get_wch()
-                    else:
-                        ch = self.screen.getch()
+                    ch = self.screen.getch()
                     if ch != -1:
                         keyboard.raw_keys.on_next(ch)
                 except curses.error as e:
                     logger.error(e)
                 except KeyboardInterrupt:
-                    self.hide_view(self.current_view)
+                    self.hide_view(self.active_component)
+
+    def get_component(self, component_class: type):
+        return self.root_component.get_component(component_class)
+
+    def focus(self, component: Component):
+        self.active_component_stack.append(component)
+
+    def blur_active_component(self):
+        self.active_component_stack.pop()
+
+    @property
+    def active_component(self):
+        if self.active_component_stack:
+            return self.active_component_stack[-1]
+        return None
 
     def quit(self):
         self.running = False
 
-    def input(self):
-        # if not self.input_component:
-        #     return
+    async def input(self, prompt: str):
+        if not self.input_component:
+            return
 
-        self.input_component.mark_for_redraw()
-        self.input_component.visible = True
-        # self.input_mode = True
+        self.input_mode = True
+        result = await self.input_component.request_value(prompt)
+        self.input_mode = False
+        return result
 
-        # yield '-'
+    def add_notification(self, component: Component):
+        if self.notifications_layout:
+            self.notifications_layout.add(component)
+            self.root_component.update_layout()
 
-
-    # def refresh(self):
-    #     if self.renderer:
-    #         self.renderer.redraw()
-
-    # def open_view_in(self, view, container_id):
-    #     container = self.root_component.get_by_id(container_id)
-    #     self.current_view = view
-    #     if view not in container.childs:
-    #         container.add(view)
-
-    # def remove_view_from(self, view, container_id):
-    #     container = self.root_component.get_by_id(container_id)
-    #     if view in container.childs:
-    #         container.remove(view)
+    def show_error(self, text: str):
+        error_component = LabelComponent(
+            text,
+            align=LabelComponent.Align.left,
+            color=colors.colors['error'],
+            context='error',
+        )
+        self.add_notification(error_component)
+        self.focus(error_component)

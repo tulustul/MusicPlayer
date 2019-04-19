@@ -2,6 +2,7 @@
     "colors": {
         "normal": [254, 236],
         "selected": [254, 238],
+        "prompt": [215, 236],
         "bar": [215, 235],
         "bar-elapsed": [215, 238],
         "error": [197, 237],

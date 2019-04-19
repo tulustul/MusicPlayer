@@ -4,21 +4,20 @@ from dataclasses import dataclass
 import logging
 
 from core.app import App
+from plugins.commands_palette.components import PaletteComponent
 from ui.components.layout import Layout
 from ui.components.table import TableComponent
 from ui.components.label import LabelComponent
-from ui.components.progress import ProgressComponent
 from ui.components.input import InputComponent
 
 logger = logging.getLogger('player')
 
 
 def setup(app: App):
-    layout = app.window.root_component
-    layout.direction = Layout.Direction.vertical
+    root = app.window.root_component
 
     list_component = TableComponent()
-    app.window.current_view = list_component
+    app.window.focus(list_component)
 
     # list_component.data = [f'option {i}' for i in range(100)]
     from dataclasses import dataclass
@@ -56,44 +55,36 @@ def setup(app: App):
     sidebar.desired_size = 30
 
     layout2 = Layout()
+    root.add(layout2)
+
     layout2.direction = Layout.Direction.horizontal
-    layout2.add(sidebar)
+    # layout2.add(sidebar)
     layout2.add(list_component)
 
-    layout.add(layout2)
-
-    commands = LabelComponent('commands')
+    commands = PaletteComponent()
     commands.desired_size = 6
+    commands.visible = False
 
-    layout.add(commands)
-
-    progress_component = ProgressComponent()
-    progress_component.set_text('progress', '')
+    root.add(commands)
 
     input_component = InputComponent()
     input_component.visible = False
 
+    notifications = Layout()
+
+    app.window.notifications_layout = notifications
     components = [
+        notifications,
         input_component,
-        progress_component,
-        LabelComponent('errors'),
-        LabelComponent('playback'),
     ]
     for c in components:
         c.desired_size = 1
-        layout.add(c)
+        root.add(c)
 
     app.window.input_component = input_component
 
-    asyncio.get_event_loop().create_task(test_progress(progress_component))
-
-
-async def test_progress(progress_component: ProgressComponent):
-    while True:
-        await asyncio.sleep(0.2)
-        progress_component.progress += 0.01
-        if progress_component.progress > 1:
-            progress_component.progress = 0
+    for component in app.window.root_component.get_descendants():
+        component.mark_for_redraw()
 
 
 if __name__ == '__main__':

@@ -1,11 +1,13 @@
 from decimal import Decimal, ROUND_HALF_UP
 from enum import Enum
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Set
 
 from core.errors import errors
-from .component import AbstractComponent, class_registry
 import ui
+
+from .component import AbstractComponent, class_registry
+from ..rect import Rect
 
 logger = logging.getLogger(name='ui')
 
@@ -18,42 +20,28 @@ class Layout(AbstractComponent):
 
     def __init__(self):
         super().__init__()
-        self.childs = []
-        self.direction = Layout.Direction.horizontal
+        self.childs: List[AbstractComponent] = []
+        self.direction = Layout.Direction.vertical
 
-    @classmethod
-    def make_from_config(cls, config):
-        layout = super().make_from_config(config)
-        layout.direction = Layout.Direction[
-            config.get('direction', 'vertical')
-        ]
-        for child in config.get('components', []):
-            component_class = class_registry[child['class']]
-            if not component_class:
-                errors.on_next(
-                    'unknown component class: {}'.format(component_class)
-                )
-                return
-            layout.add(component_class.make_from_config(child))
-        return layout
+        self.old_desired_size = 0
 
-    def refresh(self):
-        self.mark_for_redraw()
-        self.calculate_sizes()
+    def mark_for_update(self):
+        if self.renderer:
+            self.renderer.schedule_layout_update(self)
 
     def add(self, component: AbstractComponent):
         self.childs.append(component)
         component.parent = self
-        self.calculate_sizes()
-        # self.refresh()
-        # ui.win.refresh()
+        component.renderer = self.renderer
+        if component.visible and not isinstance(component, Layout):
+            component.mark_for_redraw()
+        self.mark_for_update()
 
     def remove(self, component: AbstractComponent):
         self.childs.remove(component)
         component.parent = None
-        self.calculate_sizes()
-        # self.refresh()
-        # ui.win.refresh()
+        component.renderer = None
+        self.mark_for_update()
 
     def clear(self):
         for child in self.childs:
@@ -61,16 +49,23 @@ class Layout(AbstractComponent):
         self.childs = []
         self.refresh()
 
-    def calculate_sizes(self):
-        if not self.lines or not self.cols:
-            return
+    def update_layout(self) -> set:
+        if self.rect.is_void:
+            return set()
+
+        updated_layouts = set([self])
+
+        if self.old_desired_size != self.desired_size:
+            self.old_desired_size = self.desired_size
+            if self.parent:
+                updated_layouts |= self.parent.update_layout()
 
         if self.direction == Layout.Direction.horizontal:
             vertical = False
-            total_size = self.cols
+            total_size = self.rect.width
         elif self.direction == Layout.Direction.vertical:
             vertical = True
-            total_size = self.lines
+            total_size = self.rect.height
         else:
             logger.error('Unknown layout type: {}'.format(self.direction))
 
@@ -86,6 +81,8 @@ class Layout(AbstractComponent):
         current_offset = Decimal(0)
 
         for component in visible_childs:
+            component.mark_for_redraw()
+
             decimal_size = Decimal(
                 component.desired_size or
                 max(fluent_size / len(fluent_childs), 0)
@@ -100,12 +97,20 @@ class Layout(AbstractComponent):
             ) - offset - size
 
             if vertical:
-                component.set_size(self.x, self.y + offset, self.cols, size)
+                component.set_rect(Rect(
+                    self.rect.x, self.rect.y + offset,
+                    self.rect.width, size,
+                ))
             else:
-                component.set_size(self.x + offset, self.y, size, self.lines)
+                component.set_rect(Rect(
+                    self.rect.x + offset, self.rect.y,
+                    size, self.rect.height,
+                ))
 
         for child_layout in self.child_layouts:
-            child_layout.calculate_sizes()
+            updated_layouts |= child_layout.update_layout()
+
+        return updated_layouts
 
     def get_visible_childs(self):
         return [child for child in self.childs if child.visible]
@@ -117,27 +122,21 @@ class Layout(AbstractComponent):
             if isinstance(child, Layout)
         )
 
-    def draw(self):
-        for child in self.get_visible_childs():
-            child.draw()
+    def get_descendants(self):
+        for component in self.childs:
+            if isinstance(component, Layout):
+                yield from component.get_descendants()
+            else:
+                yield component
 
-    def get_by_id(self, component_id):
-        result = None
-        if self.id == component_id:
-            result = self
-        else:
-            for component in self.childs:
-                if component.id == component_id:
-                    result = component
-                elif isinstance(component, Layout):
-                    result = component.get_by_id(component_id)
-                if result:
-                    break
-        return result
+    def get_component(self, component_class: type):
+        for component in self.get_descendants():
+            if isinstance(component, component_class):
+                return component
 
     @property
     def visible(self):
-        return self._visible and list(self.get_visible_childs())
+        return bool(self._visible and list(self.get_visible_childs()))
 
     @visible.setter
     def visible(self, visible):

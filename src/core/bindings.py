@@ -9,6 +9,7 @@ from core import (
     keyboard,
     context,
 )
+from ui.window import Window
 
 logger = logging.getLogger('keybindings')
 
@@ -19,8 +20,13 @@ class BindingsController:
 
     context_keybindings: dict = defaultdict(dict)
 
-    def __init__(self, commander: commands_runner.CommandsRunner):
+    def __init__(
+        self,
+        commander: commands_runner.CommandsRunner,
+        window: Window,
+    ):
         self.commander = commander
+        self.window = window
 
         config_keybindings = config.get_keybindings()
 
@@ -44,16 +50,15 @@ class BindingsController:
         keyboard.keys.subscribe(self.handle_keys)
 
     def get_binding(self, key: str):
-        current_context = cast(context.Context, context.current_context)
-        logger.info(current_context.name)
-        binding_context = self.context_keybindings.get(
-            current_context.name,
-        ) or {}
+        current_context = self.window.active_component.context
+        # logger.info(current_context.name)
+        binding_context = self.context_keybindings.get(current_context) or {}
         return binding_context.get(key) or self.general_keybindings.get(key)
 
 
     def handle_keys(self, key: str):
-        binding = self.get_binding(key)
-        if binding:
-            command, args = binding
-            self.commander.run_command(command, *args)
+        if not self.window.input_mode or key in ('<up>', '<down>'):
+            binding = self.get_binding(key)
+            if binding:
+                command, args = binding
+                self.commander.run_command(command, *args)

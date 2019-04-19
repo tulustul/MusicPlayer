@@ -1,3 +1,4 @@
+import asyncio
 import sys
 import traceback
 import logging
@@ -13,7 +14,8 @@ logger = logging.getLogger('commands_runner')
 
 class CommandsRunner:
 
-    def __init__(self, injector: Injector):
+    def __init__(self, loop: asyncio.AbstractEventLoop, injector: Injector):
+        self.loop = loop
         self.injector = injector
 
     def run_text_command(self, text_command: str):
@@ -28,7 +30,7 @@ class CommandsRunner:
             logger.warn('Unknown command: {}'.format(command_name))
 
     def run_command(self, command: Command, *args):
-        logger.debug('invoking command: {} {}'.format(command.name, args))
+        # logger.debug('invoking command: {} {}'.format(command.name, args))
 
         args_iterator = args.__iter__()
 
@@ -41,7 +43,10 @@ class CommandsRunner:
                 kwargs[param] = next(args_iterator)
 
         try:
-            command.func(**kwargs)
+            if inspect.iscoroutinefunction(command.func):
+                self.loop.create_task(command.func(**kwargs))
+            else:
+                command.func(**kwargs)
         except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             logger.error(''.join(traceback.format_exception(

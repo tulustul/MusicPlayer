@@ -1,7 +1,6 @@
 import logging
 
 from .component import Component
-from .input import InputComponent
 from ..colors import colors
 
 logger = logging.getLogger('ui')
@@ -19,12 +18,6 @@ class ListComponent(Component):
 
         self.index = 0
 
-        self.search_enabled = False
-
-        # self.search_box = InputComponent()
-
-        # self.search_box.value.subscribe(self.filter_data)
-
         self.selected_color = colors['selected']
 
     def draw_content(self):
@@ -41,9 +34,6 @@ class ListComponent(Component):
 
             self.win.addstr(i, 0, entry, color)
 
-        # if self.search_enabled:
-        #     self.search_box.refresh()
-
     @property
     def data(self):
         return self._data
@@ -54,29 +44,12 @@ class ListComponent(Component):
         self.filtered_data = data
 
     @property
-    def search_enabled(self):
-        return self._search_enabled
-
-    @search_enabled.setter
-    def search_enabled(self, enabled):
-        self._search_enabled = enabled
-        self.set_size(self.x, self.y, self.cols, self.lines)
-        self.mark_for_redraw()
-
-    def set_size(self, x, y, cols, lines):
-        # if self.search_enabled:
-        #     self.search_box.set_size(x, y, cols, self.search_box.HEIGHT)
-        #     y += 1
-        #     cols -= 1
-        super().set_size(x, y, cols, lines)
-
-    @property
     def min_index(self):
-        return max(0, self.page * self.list_size - 1)
+        return max(0, self.page * self.list_size)
 
     @property
     def max_index(self):
-        return (self.page + 1) * self.list_size - 1
+        return self.min_index + self.list_size
 
     @property
     def value(self):
@@ -84,7 +57,7 @@ class ListComponent(Component):
 
     @property
     def list_size(self):
-        return self.lines
+        return self.rect.height
 
     def go_by(self, offset):
         self.set_index(self.index + offset)
@@ -103,20 +76,15 @@ class ListComponent(Component):
 
     def set_index(self, new_index):
         self.index = max(0, min(new_index, len(self.filtered_data) - 1))
-        self.page = int((self.index + 1) / self.list_size)
+        self.page = self.index // self.list_size
         self.mark_for_redraw()
 
-    def filter_data(self, term):
-        term = term.split()
-        if term:
-            term = term[0]
+    def filter(self, term: str):
+        tokens = term.split()
+        if tokens:
             self.filtered_data = [
-                entry for entry in self.data if term in entry
+                entry for entry in self.data if tokens[0] in entry
             ]
         else:
-            self.filtered_data = self.data
+            self.filtered_data = self.data[:]
         self.mark_for_redraw()
-
-    # def autocomplete_input(self):
-    #     logger.warn(self.value)
-    #     self.search_box.set_value(self.value)

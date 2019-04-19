@@ -6,7 +6,7 @@ from core import config, utils
 from .listview import ListComponent
 from ..colors import colors
 
-logger = logging.getLogger('ui')
+logger = logging.getLogger('ui.table')
 
 FORMATS = {
     'time': utils.format_seconds,
@@ -45,7 +45,7 @@ class TableComponent(ListComponent):
                 column_size += len(self.border)
 
             self.draw_text(
-                column['name'], x, 0,
+                column['name'], 0, x,
                 column_size, self.headers_color,
             )
 
@@ -57,8 +57,8 @@ class TableComponent(ListComponent):
 
             formatter = FORMATS.get(column.get('format'), default_format)
 
-            for i, entry in page_data:
-                if i + self.min_index == self.index:
+            for y, entry in page_data:
+                if y + self.min_index == self.index:
                     color = self.selected_color
                     border_color = self.borders_selected_color
                 else:
@@ -67,30 +67,19 @@ class TableComponent(ListComponent):
 
                 text = formatter(getattr(entry, column['field'], ''))
 
-                # logger.debug('{} {} {}'.format(x, i + 1, text))
-                self.draw_text(text, x, i + 1, column['real_size'], color)
+                # logger.debug('{} {} {}'.format(y, x, text))
+                self.draw_text(text, y + 1, x, column['real_size'], color)
                 if not is_last_column:
                     self.win.addstr(
-                        i + 1, x + column['real_size'],
+                        y + 1, x + column['real_size'],
                         self.border, border_color,
                     )
 
             x += column['real_size'] + len(self.border)
 
-        # if self.search_enabled:
-        #     self.search_box.refresh()
-
-    # @property
-    # def min_index(self):
-    #     return max(0, self.page * self.list_size - 1)
-
-    # @property
-    # def max_index(self):
-        # return (self.page + 1) * self.list_size - 0
-
     @property
     def list_size(self):
-        return super().list_size - 2
+        return super().list_size - 1  # minus header
 
     @property
     def columns(self):
@@ -103,7 +92,7 @@ class TableComponent(ListComponent):
 
     def calculate_columns_size(self):
         flex_columns_count = 0
-        cols = self.cols - (len(self.columns) - 1) * len(self.border)
+        width = self.rect.width - (len(self.columns) - 1) * len(self.border)
 
         fixed_columns = [c for c in self.columns if c.get('size')]
         flex_columns = [c for c in self.columns if not c.get('size')]
@@ -111,15 +100,15 @@ class TableComponent(ListComponent):
         for column in fixed_columns:
             column['real_size'] = column['size']
 
-        flex_total_space = cols - sum(c['size'] for c in fixed_columns)
+        flex_total_space = width - sum(c['size'] for c in fixed_columns)
 
         for column in flex_columns:
             column['real_size'] = math.floor(flex_total_space / len(flex_columns))
 
         if flex_columns:
             total_size = sum(c['real_size'] for c in self.columns)
-            flex_columns[0]['real_size'] += cols - total_size
+            flex_columns[0]['real_size'] += width - total_size
 
-    def set_size(self, *args):
-        super().set_size(*args)
+    def set_rect(self, *args):
+        super().set_rect(*args)
         self.calculate_columns_size()

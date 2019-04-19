@@ -1,32 +1,25 @@
 import logging
+from typing import Set
 
-from .components.layout import Layout
-
-logger = logging.getLogger('ui.toolkit')
+logger = logging.getLogger('ui.renderer')
 
 
 class Renderer:
 
-    def __init__(self, screen, root_component):
-        self.screen = screen
-        self.root_component = root_component
-
-    def redraw(self):
-        y, x = self.screen.getmaxyx()
-        self.root_component.lines = y
-        self.root_component.cols = x
-        self.root_component.calculate_sizes()
-        self.root_component.draw()
+    def __init__(self):
+        self._layouts_to_update = set()
+        self._components_to_draw = set()
 
     def update(self):
-        self.screen.refresh()
-        for component in self.get_components_to_draw(self.root_component):
-            component.draw()
+        while self._layouts_to_update:
+            layout = self._layouts_to_update.pop()
+            self._layouts_to_update -= layout.update_layout()
 
-    def get_components_to_draw(self, component):
-        if component.redraw_requested:
-            yield component
-            component.redraw_requested = False
-        elif isinstance(component, Layout):
-            for child in component.childs:
-                yield from self.get_components_to_draw(child)
+        while self._components_to_draw:
+            self._components_to_draw.pop().draw()
+
+    def schedule_layout_update(self, layout):
+        self._layouts_to_update.add(layout)
+
+    def schedule_component_redraw(self, component):
+        self._components_to_draw.add(component)

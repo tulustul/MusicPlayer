@@ -13,11 +13,12 @@
 
   "plugins": [
     "test_plug",
-    "bar"
+    "debug",
+    "bar",
+    "commands_palette"
     // "library",
     // "playlist",
     // "errors_view",
-    // "commands_palette",
     // "scan",
     // "track_scheduler",
     // "tray_menu",
@@ -96,7 +97,7 @@
 
   "keybindings": [
     {
-      "keys": ["q"],
+      "keys": ["q", "<exit>"],
       "command": "quit"
     },
     {
@@ -108,25 +109,25 @@
       "command": "navigate_list_bottom"
     },
     {
-      "keys": ["<pagedown>"],
+      "keys": ["<npage>"],
       "command": "navigate_next_page"
     },
     {
-      "keys": ["<pageup>"],
+      "keys": ["<ppage>"],
       "command": "navigate_previous_page"
     },
     {
-      "keys": ["<arrowdown>"],
+      "keys": ["<down>"],
       "command": "navigate_list_by",
       "args": [1]
     },
     {
-      "keys": ["<arrowup>"],
+      "keys": ["<up>"],
       "command": "navigate_list_by",
       "args": [-1]
     },
     {
-      "keys": ["<arrowright>"],
+      "keys": ["<right>"],
       "command": "autocomplete_input"
     },
     {
@@ -140,12 +141,12 @@
       "context": "playlist"
     },
     {
-      "keys": ["<arrowleft>"],
+      "keys": ["<left>"],
       "command": "rewind",
       "args": [-10]
     },
     {
-      "keys": ["<arrowright>"],
+      "keys": ["<right>"],
       "command": "rewind",
       "args": [10]
     },
@@ -177,17 +178,13 @@
       "args": ["kaczmarski"]
     },
     {
-      "keys": [":"],
+      "keys": [":", ";"],
       "command": "open_palette"
     },
     {
-      "keys": ["<enter>"],
-      "command": "run_command",
-      "context": "palette"
-    },
-    {
-      "keys": ["<esc>", "<interrupt>"],
-      "command": "pop_context"
+      "keys": ["<esc>", "<exit>", "<enter>"],
+      "command": "dismiss_error",
+      "context": "error"
     },
     {
       "keys": ["<resize>"],
@@ -196,6 +193,10 @@
     {
       "keys": ["t"],
       "command": "test_input"
+    },
+    {
+      "keys": ["d"],
+      "command": "debug_dump_layout"
     }
   ]
 }

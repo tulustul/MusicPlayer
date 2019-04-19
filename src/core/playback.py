@@ -3,6 +3,7 @@ from collections import namedtuple
 import logging
 
 from rx.subjects import Subject, ReplaySubject
+from rx.operators import map
 
 from core import audio, utils
 import ui
@@ -75,4 +76,4 @@ state.subscribe(set_state)
 progress.subscribe(set_position)
 duration.subscribe(set_duration)
 
-time_tracking = progress.map(make_time_tracking)
+time_tracking = progress.pipe(map(make_time_tracking))

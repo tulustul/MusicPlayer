@@ -1,5 +1,5 @@
 commentjson
-rxpy
+Rx==3.0.0a3
 sqlalchemy
 setproctitle
 mutagen

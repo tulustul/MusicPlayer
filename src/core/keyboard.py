@@ -1,50 +1,37 @@
 import curses
 from rx.subjects import Subject
+from rx.operators import map
+
+
+def get_curses_key_definitions():
+    return (
+        (key, value) for key, value in vars(curses).items()
+        if key.startswith('KEY_')
+    )
+
+
+def get_key_binding_name(key_name: str):
+    # KEY_ENTER -> <enter>
+    name = key_name[len('KEY_'):].lower()
+    return f'<{name}>'
+
 
 KEY_CODES = {
-    '<home>': 262,
-    '<end>': 360,
-    '<pagedown>': 338,
-    '<pageup>': 339,
-    '<backspace>': 263,
-    '<space>': 32,
-    # '<enter>': '\n',
-    '<enter>': 10,
-    '<tab>': 9,
-    '<esc>': 27,
-    '<delete>': 330,
-    '<insert>': 331,
-    '<arrowdown>': 258,
-    '<arrowup>': 259,
-    '<arrowleft>': 260,
-    '<arrowright>': 261,
-    '<f1>': 265,
-    '<f2>': 266,
-    '<f3>': 267,
-    '<f4>': 268,
-    '<f5>': 269,
-    '<f6>': 270,
-    '<f7>': 271,
-    '<f8>': 272,
-    '<f9>': 273,
-    '<f10>': 274,
-    '<f11>': 275,
-    '<f12>': 276,
-    '<resize>': curses.KEY_RESIZE,
-    '<interrupt>': curses.KEY_EXIT,
+    key_value: get_key_binding_name(key_name)
+    for key_name, key_value in get_curses_key_definitions()
 }
 
-KEY_CODES_REVERSED = {code: name for name, code in KEY_CODES.items()}
+# add some entries missing in curses definitions
+KEY_CODES[10] = '<enter>'
+KEY_CODES[27] = '<esc>'
 
-
-def tranform_code(key):
+def tranform_code(key: int) -> str:
     try:
         default = chr(key)
-        # default = chr(key) if isinstance(key, int) else key
-        return KEY_CODES_REVERSED.get(key, default)
+        return KEY_CODES.get(key, default)
     except:
         return ''
 
 
 raw_keys = Subject()
-keys = raw_keys.map(tranform_code)
+keys = raw_keys.pipe(map(tranform_code))

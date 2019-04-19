@@ -20,6 +20,8 @@ class ProgressComponent(Component):
         self.left_text = ''
         self.right_text = ''
 
+        self.desired_size = 1
+
     @property
     def progress(self):
         return self._progress
@@ -36,20 +38,21 @@ class ProgressComponent(Component):
 
     def draw_content(self):
         percantage = int(self.progress * 100)
-        right_text = f'{self.right_text} {percantage}%'
+        right_text = f'{self.right_text} {percantage}'
 
-        max_left_text_length = self.cols - len(right_text) - 1
+        max_left_text_length = self.rect.width - len(right_text) - 1
         if len(self.left_text) >= max_left_text_length:
             self.left_text = self.left_text[:max_left_text_length - 2] + '… '
 
         text = '{}{}{}'.format(
             self.left_text,
-            ' ' * (self.cols - len(self.left_text) - 1 - len(right_text)),
+            ' ' * (self.rect.width - len(self.left_text) - 1 - len(right_text)),
             right_text,
         )
 
-        progress_div = int(self.cols * self.progress)
-        progress_div = min(self.cols - 1, progress_div)
+        progress_div = int(self.rect.width * self.progress)
+        progress_div = min(self.rect.width - 1, progress_div)
 
         self.win.addstr(0, 0, text[:progress_div], self.elapsed_color)
         self.win.addstr(0, progress_div, text[progress_div:], self.color)
+        self.win.insch(0, self.rect.width - 1, '%', self.color)

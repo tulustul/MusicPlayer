@@ -1,7 +1,11 @@
 import logging
 import curses
+from typing import Optional
 
 from ui.colors import colors
+
+from ..rect import Rect
+from ..renderer import Renderer
 
 logger = logging.getLogger('ui')
 
@@ -19,39 +23,23 @@ class AbstractComponent(metaclass=ComponentMeta):
     def __init__(self):
         self.id = None
 
-        self.redraw_requested = False
-
-        self.x = 0
-        self.y = 0
-        self.lines = 0
-        self.cols = 0
+        self.rect = Rect(0, 0, 0, 0)
 
         self._visible = True
         self._desired_size = 0
 
         self.parent = None
 
-    @classmethod
-    def make_from_config(cls, config):
-        component = cls()
-        component.id = config.get('id')
-        component.desired_size = config.get('desired_size', 0)
-        return component
+        self.renderer: Optional[Renderer] = None
 
     def mark_for_redraw(self):
-        self.redraw_requested = True
+        pass
 
     def draw(self):
         raise NotImplementedError
 
-    def set_size(self, x, y, cols, lines):
-        self.x = x
-        self.y = y
-        self.lines = lines
-        self.cols = cols
-
-    def __str__(self):
-        return '<{}> {}'.format(self.__class__.__name__, self.id)
+    def set_rect(self, rect: Rect):
+        self.rect = rect
 
     @property
     def visible(self):
@@ -61,7 +49,7 @@ class AbstractComponent(metaclass=ComponentMeta):
     def visible(self, visible):
         self._visible = visible
         if self.parent:
-            self.parent.refresh()
+            self.parent.update_layout()
 
     @property
     def desired_size(self):
@@ -71,35 +59,51 @@ class AbstractComponent(metaclass=ComponentMeta):
     def desired_size(self, desired_size):
         self._desired_size = desired_size
 
+    def detach(self):
+        if self.parent:
+            self.parent.remove(self)
+
 
 class Component(AbstractComponent):
 
-    def __init__(self):
+    def __init__(self, context=None):
         super().__init__()
         self.win = None
         self.color = colors['normal']
+        self.context = context
 
-    @classmethod
-    def make_from_config(cls, config):
-        component = super().make_from_config(config)
-        component.color = colors[config.get('color')]
-        return component
+    def mark_for_redraw(self):
+        if self.renderer:
+            self.renderer.schedule_component_redraw(self)
 
     def draw(self):
-        self.win.bkgd(' ', self.color)
-        self.draw_content()
-        self.win.refresh()
+        if self.win:
+            self.win.bkgd(' ', self.color)
+            self.draw_content()
+            self.win.refresh()
 
     def draw_content(self):
         raise NotImplementedError
 
-    def draw_text(self, text, x, y, length, *args):
+    def draw_text(self, text: str, y: int, x: int, length: int, *args):
         if len(text) > length:
             text = text[:length - 1] + '…'
         else:
             text = text + ' ' * (length - len(text))
+
+        # curses disallow to render bottom right corner of a window using
+        # addstr. We strip the last value and render it using insch.
+        # https://stackoverflow.com/questions/36387625/curses-fails-when-calling-addch-on-the-bottom-right-corner
+        if y == self.rect.height - 1 and x + len(text) == self.rect.width:
+            last_char = text[-1]
+            text = text[:-1]
+            self.win.insch(
+                self.rect.height - 1, self.rect.width - 1, last_char, *args,
+            )
+
         self.win.addstr(y, x, text, *args)
 
-    def set_size(self, *args):
-        super().set_size(*args)
-        self.win = curses.newwin(self.lines, self.cols, self.y, self.x)
+    def set_rect(self, rect: Rect):
+        super().set_rect(rect)
+        self.win = curses.newwin(rect.height, rect.width, rect.y, rect.x)
+        self.mark_for_redraw()

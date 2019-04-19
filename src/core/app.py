@@ -60,15 +60,20 @@ class App:
             # audio.init(loop)
             plugging.load_plugins(self.loop)
             # db.init()
-            self.window = Window()
+            self.window = Window(self.loop)
             self.injector = dependency_injection.Injector()
 
-            core_providers.register_core_providers(self.injector, self.window)
-            commander = commands_runner.CommandsRunner(self.injector)
-            binding_controller = bindings.BindingsController(commander)
+            self.commander = commands_runner.CommandsRunner(
+                self.loop, self.injector,
+            )
+            self.binding_controller = bindings.BindingsController(
+                self.commander, self.window,
+            )
             plugging.init_plugins()
 
             context.push(config['default_context'])
+
+            core_providers.register_core_providers(self)
         except Exception as e:
             self.crashed = True
             log_exception(self.window)
