@@ -59,7 +59,7 @@ class App:
 
             # audio.init(loop)
             plugging.load_plugins(self.loop)
-            # db.init()
+            db.init()
             self.window = Window(self.loop)
             self.injector = dependency_injection.Injector()
 

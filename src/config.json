@@ -15,11 +15,11 @@
     "test_plug",
     "debug",
     "bar",
-    "commands_palette"
-    // "library",
+    "commands_palette",
+    "library",
+    "scan"
     // "playlist",
     // "errors_view",
-    // "scan",
     // "track_scheduler",
     // "tray_menu",
     // "search"
@@ -189,10 +189,6 @@
     {
       "keys": ["<resize>"],
       "command": "refresh"
-    },
-    {
-      "keys": ["t"],
-      "command": "test_input"
     },
     {
       "keys": ["d"],

@@ -31,7 +31,7 @@ class ProgressComponent(Component):
         self._progress = progress
         self.mark_for_redraw()
 
-    def set_text(self, left_text: str, right_text: str):
+    def set_text(self, left_text: str, right_text=''):
         self.left_text = left_text
         self.right_text = right_text
         self.mark_for_redraw()

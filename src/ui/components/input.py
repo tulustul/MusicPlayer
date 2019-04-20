@@ -91,7 +91,7 @@ class InputComponent(Component):
 
     @property
     def text_value(self):
-        return ''.join(self.text[:-1])
+        return ''.join(self.text[:-1]).strip()
 
     def set_value(self, value):
         self.text = list(value + ' ')
@@ -107,3 +107,4 @@ class InputComponent(Component):
         self.mark_for_redraw()
         self.visible = True
         return self.future
+

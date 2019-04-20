@@ -1,33 +1,64 @@
+import asyncio
+import functools
 import glob
 import logging
 import os
+from typing import List, Sequence
 
 import mutagen
 from mutagen.id3 import ID3
 from sqlalchemy import exists
 
-import db
+from core import db
 from commands.decorator import command
-# from plugins import playlist
 from plugins import library
+from ui.window import Window
+from ui.components.progress import ProgressComponent
 
-logger = logging.getLogger('scan')
+logger = logging.getLogger('plugins.scan')
 
 
 @command()
-def scan_local_files(path):
-    files = glob.iglob('{}/**/*.*'.format(path), recursive=True)
+async def scan_local_files(window: Window):
+    path = await window.input('path:')
+
+    if not path:
+        return
+
+    progress_component = ProgressComponent()
+    progress_component.set_text('listing files...')
+
+    window.add_notification(progress_component)
+
+    files = glob.iglob(f'{path}/**/*.*', recursive=True)
 
     files = (f for f in files if not os.path.isdir(f))
 
-    tracks = (create_track(f) for f in files)
-    tracks = (track for track in tracks if track)
+    progress_component.set_text('scanning...')
 
-    add_tracks(tracks)
+    await asyncio.get_event_loop().run_in_executor(
+        None, functools.partial(create_tracks, progress_component, list(files)),
+    )
 
-    library.load_library()
+    # library.load_library()
+
+    progress_component.detach()
 
     logger.info('Scan done')
+
+
+def create_tracks(progress_component: ProgressComponent, files: List[str]):
+    total = len(files)
+    tracks: List[Track] = []
+    for f in files:
+        track = create_track(f)
+        if track:
+            tracks.append(track)
+        progress_component.progress += 1 / total
+
+    progress_component.set_text('saving to library...')
+
+    add_tracks(tracks)
 
 
 def get_field(metadata, field):
@@ -43,7 +74,7 @@ def create_track(filepath):
 
     if metadata:
         return library.models.Track(
-            uri='file://{}'.format(filepath),
+            uri=f'file://{filepath}',
             source='local_disk',
             length=metadata.info.length,
             title=get_field(metadata, 'TIT2') or os.path.basename(filepath),

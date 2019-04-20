@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-import db
+from core import db
 
 
 class Track(db.Base):
