@@ -18,10 +18,10 @@
     "commands_palette",
     "library",
     "scan",
-    "search"
+    "search",
+    "track_scheduler"
     // "playlist",
     // "errors_view",
-    // "track_scheduler",
     // "tray_menu",
     // "search"
   ],

@@ -1,24 +1,24 @@
 import random
 
 from commands.decorator import command
-from plugins import playlist
-import playback
+from ui.window import Window
+from core.audio import AudioBackend
 
 
 @command()
-def next_track():
-    playlist.playlist_view.go_by(1)
-    playback.current_track.on_next(playlist.playlist_view.value)
+def next_track(window: Window, audio: AudioBackend):
+    window.active_component.go_by(1)
+    audio.play_track(window.active_component.value)
 
 
 @command()
-def previous_track():
-    playlist.playlist_view.go_by(-1)
-    playback.current_track.on_next(playlist.playlist_view.value)
+def previous_track(window: Window, audio: AudioBackend):
+    window.active_component.go_by(-1)
+    audio.play_track(window.active_component.value)
 
 
 @command()
-def random_track():
-    new_index = random.randrange(len(playlist.playlist_view.filtered_data))
-    playlist.playlist_view.set_index(new_index)
-    playback.current_track.on_next(playlist.playlist_view.value)
+def random_track(window: Window, audio: AudioBackend):
+    new_index = random.randrange(len(window.active_component.filtered_data))
+    window.active_component.set_index(new_index)
+    audio.play_track(window.active_component.value)
