@@ -48,6 +48,7 @@ class App:
         self.crashed = False
         self.loop = None
         self.window = None
+        self.audio = None
 
         try:
             setproctitle.setproctitle('music-player')
@@ -57,7 +58,8 @@ class App:
             if config['log_level'] == 'DEBUG':
                 self.loop.set_debug(True)
 
-            # audio.init(loop)
+            self.audio = audio.GstAudioBackend()
+
             plugging.load_plugins(self.loop)
             db.init()
             self.window = Window(self.loop)
@@ -100,7 +102,8 @@ class App:
         plugging.destroy()
         if self.window:
             self.window.destroy()
-        # audio.destroy()
+        if self.audio:
+            self.audio.destroy()
         for task in asyncio.Task.all_tasks():
             task.cancel()
         try:

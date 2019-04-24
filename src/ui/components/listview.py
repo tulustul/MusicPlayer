@@ -8,8 +8,8 @@ logger = logging.getLogger('ui')
 
 class ListComponent(Component):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._data = []
 
         self.filtered_data = []

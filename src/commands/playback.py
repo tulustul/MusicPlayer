@@ -1,21 +1,22 @@
 import logging
 
+from core.audio.audio_backend import AudioBackend
+from ui.window import Window
+
 from .decorator import command
-import core.playback
-import ui
 
 logger = logging.getLogger('commands')
 
 @command()
-def play_track():
-    playback.current_track.on_next(ui.win.current_view.value)
+def play_track(window: Window, audio: AudioBackend):
+    audio.current_track.on_next(window.active_component.value)
 
 
 @command()
-def pause_track():
-    playback.toggle_pause()
+def pause_track(audio: AudioBackend):
+    audio.toggle_pause()
 
 
 @command()
-def rewind(offset):
-    playback.rewind(offset)
+def rewind(audio: AudioBackend, offset: int):
+    audio.rewind(offset)

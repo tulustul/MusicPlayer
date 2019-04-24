@@ -17,7 +17,8 @@
     "bar",
     "commands_palette",
     "library",
-    "scan"
+    "scan",
+    "search"
     // "playlist",
     // "errors_view",
     // "track_scheduler",
@@ -133,12 +134,11 @@
     {
       "keys": ["<enter>"],
       "command": "play_track",
-      "context": "playlist"
+      "context": "tracks"
     },
     {
       "keys": ["<space>"],
-      "command": "pause_track",
-      "context": "playlist"
+      "command": "pause_track"
     },
     {
       "keys": ["<left>"],
@@ -174,8 +174,7 @@
     },
     {
       "keys": ["/"],
-      "command": "search",
-      "args": ["kaczmarski"]
+      "command": "search"
     },
     {
       "keys": [":", ";"],

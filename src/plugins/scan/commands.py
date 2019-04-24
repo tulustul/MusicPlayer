@@ -36,7 +36,7 @@ async def scan_local_files(window: Window):
 
     progress_component.set_text('scanning...')
 
-    await asyncio.get_event_loop().run_in_executor(
+    result = await asyncio.get_event_loop().run_in_executor(
         None, functools.partial(create_tracks, progress_component, list(files)),
     )
 

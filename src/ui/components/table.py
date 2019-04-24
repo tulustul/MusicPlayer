@@ -18,7 +18,7 @@ def default_format(value):
 
 class TableComponent(ListComponent):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._columns = []
 
         self.headers_color = colors['table-headers']
@@ -28,7 +28,7 @@ class TableComponent(ListComponent):
 
         self.border = config.theme['strings']['border-vertical']
 
-        super().__init__()
+        super().__init__(**kwargs)
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]

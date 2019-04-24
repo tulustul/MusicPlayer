@@ -1,13 +1,13 @@
 import logging
 
-from ui.table import Table
+from ui.components.table import TableComponent
 from config import config
 import stream
 
 logger = logging.getLogger('ui')
 
 
-class Playlist(Table):
+class Playlist(TableComponent):
 
     def __init__(self):
         super().__init__()
