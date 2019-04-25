@@ -6,6 +6,7 @@ import logging
 from core.app import App
 from plugins.commands_palette.components import PaletteComponent
 from plugins.library.views import LibraryComponent
+from plugins.bar.views import BarComponent
 from ui.components.layout import Layout
 from ui.components.table import TableComponent
 from ui.components.label import LabelComponent
@@ -20,37 +21,7 @@ def setup(app: App):
     list_component = LibraryComponent(context='tracks')
     app.window.focus(list_component)
 
-    # list_component.data = [f'option {i}' for i in range(100)]
-    # from dataclasses import dataclass
-
-    # @dataclass
-    # class Data:
-    #     option: str
-    #     value: str
-
-    # list_component.data = [
-    #     Data(f'option {i}', f'value {i}')
-    #     for i in range(100)
-    # ]
-    # list_component.columns = [
-    #     {
-    #         "field": "option",
-    #         "name": "Option",
-    #         "priority": 1,
-    #         "size": 10,
-    #     },
-    #     {
-    #         "field": "value",
-    #         "name": "Value",
-    #         "priority": 2,
-    #         "size": 20,
-    #     },
-    #     {
-    #         "field": "__class__",
-    #         "name": "class",
-    #         "priority": 10,
-    #     },
-    # ]
+    bar_component = BarComponent(app.audio)
 
     sidebar = LabelComponent('sidebar')
     sidebar.desired_size = 30
@@ -77,6 +48,7 @@ def setup(app: App):
     components = [
         notifications,
         input_component,
+        bar_component,
     ]
     for c in components:
         c.desired_size = 1

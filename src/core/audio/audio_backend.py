@@ -37,7 +37,6 @@ class AudioBackend:
         self.duration = ReplaySubject(1)
         self.end_of_track = Subject()
 
-        self.current_track.subscribe(self.play_track)
         self.end_of_track.subscribe(lambda _: logger.debug('END OF TRACK'))
 
         self.state.subscribe(self.set_state)
@@ -65,7 +64,7 @@ class AudioBackend:
         return TimeTrack(
             elapsed=utils.format_seconds(position),
             total=utils.format_seconds(self.current_duration),
-            progress_percentage=position * 100 / self.current_duration,
+            progress_percentage=position / self.current_duration,
         )
 
     def set_position(self, position: int):
@@ -78,6 +77,7 @@ class AudioBackend:
         self.current_state = state
 
     def play_track(self, track: Track):
+        self.current_track.on_next(track)
         self.set_track(track)
         self.play()
 

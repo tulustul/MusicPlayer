@@ -9,7 +9,7 @@ logger = logging.getLogger('commands')
 
 @command()
 def play_track(window: Window, audio: AudioBackend):
-    audio.current_track.on_next(window.active_component.value)
+    audio.play_track(window.active_component.value)
 
 
 @command()
