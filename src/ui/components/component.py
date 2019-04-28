@@ -1,73 +1,19 @@
 import logging
 import curses
-from typing import Optional
 
 from ui.colors import colors
 
+from .abstract_component import AbstractComponent
+from .layout import Layout
 from ..rect import Rect
-from ..renderer import Renderer
 
 logger = logging.getLogger('ui')
-
-class_registry = {}
-
-
-class ComponentMeta(type):
-
-    def __init__(cls, name, bases, dct):
-        class_registry[name] = cls
-
-
-class AbstractComponent(metaclass=ComponentMeta):
-
-    def __init__(self):
-        self.id = None
-
-        self.rect = Rect(0, 0, 0, 0)
-
-        self._visible = True
-        self._desired_size = 0
-
-        self.parent = None
-
-        self.renderer: Optional[Renderer] = None
-
-    def mark_for_redraw(self):
-        pass
-
-    def draw(self):
-        raise NotImplementedError
-
-    def set_rect(self, rect: Rect):
-        self.rect = rect
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, visible):
-        self._visible = visible
-        if self.parent:
-            self.parent.update_layout()
-
-    @property
-    def desired_size(self):
-        return self._desired_size
-
-    @desired_size.setter
-    def desired_size(self, desired_size):
-        self._desired_size = desired_size
-
-    def detach(self):
-        if self.parent:
-            self.parent.remove(self)
 
 
 class Component(AbstractComponent):
 
-    def __init__(self, context=None):
-        super().__init__()
+    def __init__(self, context=None, **kwargs):
+        super().__init__(**kwargs)
         self.win = None
         self.color = colors['normal']
         self.context = context

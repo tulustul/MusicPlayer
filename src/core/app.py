@@ -46,24 +46,16 @@ class App:
 
     def __init__(self):
         self.crashed = False
-        self.loop = None
-        self.window = None
-        self.audio = None
 
         try:
             setproctitle.setproctitle('music-player')
 
             self.loop = asyncio.get_event_loop()
-
-            if config['log_level'] == 'DEBUG':
-                self.loop.set_debug(True)
-
             self.audio = audio.GstAudioBackend()
-
-            plugging.load_plugins(self.loop)
-            db.init()
             self.window = Window(self.loop)
             self.injector = dependency_injection.Injector()
+
+            plugging.load_plugins(self.loop)
 
             self.commander = commands_runner.CommandsRunner(
                 self.loop, self.injector,
@@ -71,16 +63,25 @@ class App:
             self.binding_controller = bindings.BindingsController(
                 self.commander, self.window,
             )
+
+            if config['log_level'] == 'DEBUG':
+                self.loop.set_debug(True)
+            db.init()
             plugging.init_plugins()
 
             context.push(config['default_context'])
 
             core_providers.register_core_providers(self)
+
+            self.setup()
         except Exception as e:
             self.crashed = True
             log_exception(self.window)
             self.destroy()
             raise e
+
+    def setup(self):
+        raise NotImplemented
 
     def run_forever(self):
         try:

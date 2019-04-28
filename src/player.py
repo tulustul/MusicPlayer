@@ -15,52 +15,41 @@ from ui.components.input import InputComponent
 logger = logging.getLogger('player')
 
 
-def setup(app: App):
-    root = app.window.root_component
+class PlayerUI:
 
-    list_component = LibraryComponent(context='tracks')
-    app.window.focus(list_component)
+    def __init__(self, app: App):
+        self.root = app.window.root_component
 
-    bar_component = BarComponent(app.audio)
+        self.tracks_view = LibraryComponent(context='tracks')
+        app.window.focus(self.tracks_view)
 
-    sidebar = LabelComponent('sidebar')
-    sidebar.desired_size = 30
+        self.bar_component = BarComponent(app.audio, desired_size=1)
 
-    layout2 = Layout()
-    root.add(layout2)
+        # sidebar = Layout(desired_size=30)
 
-    layout2.direction = Layout.Direction.horizontal
-    # layout2.add(sidebar)
-    layout2.add(list_component)
+        top_layout = Layout()
+        self.root.add(top_layout)
 
-    commands = PaletteComponent()
-    commands.desired_size = 6
-    commands.visible = False
+        top_layout.direction = Layout.Direction.horizontal
+        # top_layout.add(sidebar)
+        top_layout.add(self.tracks_view)
 
-    root.add(commands)
+        self.stack_layout = Layout()
 
-    input_component = InputComponent()
-    input_component.visible = False
+        app.window.input_container = self.stack_layout
+        self.root.add(self.stack_layout)
+        self.root.add(self.bar_component)
 
-    notifications = Layout()
+        for component in app.window.root_component.get_descendants():
+            component.mark_for_redraw()
 
-    app.window.notifications_layout = notifications
-    components = [
-        notifications,
-        input_component,
-        bar_component,
-    ]
-    for c in components:
-        c.desired_size = 1
-        root.add(c)
 
-    app.window.input_component = input_component
+class PlayerApp(App):
 
-    for component in app.window.root_component.get_descendants():
-        component.mark_for_redraw()
+    def setup(self):
+        self.ui = PlayerUI(self)
+        self.injector.provide(PlayerUI, lambda: self.ui)
 
 
 if __name__ == '__main__':
-    app = App()
-    setup(app)
-    app.run_forever()
+    PlayerApp().run_forever()

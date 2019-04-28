@@ -6,7 +6,7 @@ from typing import List, Tuple, Optional, Set
 from core.errors import errors
 import ui
 
-from .component import AbstractComponent, class_registry
+from .abstract_component import AbstractComponent
 from ..rect import Rect
 
 logger = logging.getLogger(name='ui')
@@ -18,8 +18,8 @@ class Layout(AbstractComponent):
         horizontal = 1
         vertical = 2
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.childs: List[AbstractComponent] = []
         self.direction = Layout.Direction.vertical
 
@@ -33,7 +33,7 @@ class Layout(AbstractComponent):
         self.childs.append(component)
         component.parent = self
         component.renderer = self.renderer
-        if component.visible and not isinstance(component, Layout):
+        if not isinstance(component, Layout):
             component.mark_for_redraw()
         self.mark_for_update()
 
@@ -57,7 +57,7 @@ class Layout(AbstractComponent):
 
         if self.old_desired_size != self.desired_size:
             self.old_desired_size = self.desired_size
-            if self.parent:
+            if self.parent and isinstance(self.parent, Layout):
                 updated_layouts |= self.parent.update_layout()
 
         if self.direction == Layout.Direction.horizontal:
@@ -69,18 +69,16 @@ class Layout(AbstractComponent):
         else:
             logger.error('Unknown layout type: {}'.format(self.direction))
 
-        visible_childs = self.get_visible_childs()
-
-        fluent_childs = [c for c in visible_childs if not c.desired_size]
+        fluent_childs = [c for c in self.childs if not c.desired_size]
 
         fluent_size = total_size - sum(
-            component.desired_size for component in visible_childs
+            component.desired_size for component in self.childs
             if component.desired_size
         )
 
         current_offset = Decimal(0)
 
-        for component in visible_childs:
+        for component in self.childs:
             component.mark_for_redraw()
 
             decimal_size = Decimal(
@@ -112,9 +110,6 @@ class Layout(AbstractComponent):
 
         return updated_layouts
 
-    def get_visible_childs(self):
-        return [child for child in self.childs if child.visible]
-
     @property
     def child_layouts(self):
         yield from (
@@ -136,7 +131,7 @@ class Layout(AbstractComponent):
 
     @property
     def visible(self):
-        return bool(self._visible and list(self.get_visible_childs()))
+        return bool(self._visible and self.childs)
 
     @visible.setter
     def visible(self, visible):
@@ -144,9 +139,10 @@ class Layout(AbstractComponent):
 
     @property
     def desired_size(self):
+        logger.error(self.childs)
         childs_desired_size = sum(
             c.desired_size or self._desired_size
-            for c in self.get_visible_childs()
+            for c in self.childs
         )
         return min(self._desired_size, childs_desired_size)
 

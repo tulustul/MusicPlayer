@@ -42,6 +42,7 @@ class Window:
         self.root_component.set_rect(Rect(0, 0, curses.COLS, curses.LINES))
 
         self.input_component: Optional[InputComponent] = None
+        self.input_container: Optional[Layout] = None
 
         self.notifications_layout: Optional[Layout] = None
 
@@ -108,11 +109,16 @@ class Window:
         self.running = False
 
     async def input(self, prompt: str):
-        if not self.input_component:
+        if not self.input_container:
             return
+
+        self.input_component = InputComponent()
+        self.input_container.add(self.input_component)
 
         self.input_mode = True
         result = await self.input_component.request_value(prompt)
+        self.input_component.detach()
+        self.input_component = None
         self.input_mode = False
         return result
 

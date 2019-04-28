@@ -17,8 +17,8 @@ logger = logging.getLogger('ui')
 
 class BarComponent(ProgressComponent):
 
-    def __init__(self, audio: audio.AudioBackend):
-        super().__init__()
+    def __init__(self, audio: audio.AudioBackend, **kwargs):
+        super().__init__(**kwargs)
 
         self.audio = audio
 
