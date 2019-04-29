@@ -28,40 +28,6 @@
 
   "cloud": [],
 
-  "layout": {
-    "class": "Layout",
-    "direction": "vertical",
-    "components": [
-      {
-        "class": "Layout",
-        "direction": "horizontal",
-        "components": [
-          {
-            "class": "Layout",
-            "id": "mainview",
-            "color": "test2"
-          },
-          {
-            "class": "Layout",
-            "id": "sidebar",
-            "color": "test2"
-          }
-        ]
-      },
-      {
-        "class": "Layout",
-        "id": "toolbar",
-        "desired_size": 5
-      },
-      {
-        "class": "Bar",
-        "id": "bar",
-        "desired_size": 1,
-        "color": "bar"
-      }
-    ]
-  },
-
   "playlist": {
     "open_in": "mainview",
     "columns": [

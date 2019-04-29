@@ -51,7 +51,6 @@ class BindingsController:
 
     def get_binding(self, key: str):
         current_context = self.window.active_component.context
-        # logger.info(current_context.name)
         binding_context = self.context_keybindings.get(current_context) or {}
         return binding_context.get(key) or self.general_keybindings.get(key)
 

@@ -41,10 +41,8 @@ class Window:
         self.root_component.renderer = self.renderer
         self.root_component.set_rect(Rect(0, 0, curses.COLS, curses.LINES))
 
-        self.input_component: Optional[InputComponent] = None
+        self.input_component = InputComponent()
         self.input_container: Optional[Layout] = None
-
-        self.notifications_layout: Optional[Layout] = None
 
         self.input_mode = False
 
@@ -110,29 +108,14 @@ class Window:
 
     async def input(self, prompt: str):
         if not self.input_container:
-            return
+            raise ValueError('No input_container')
 
-        self.input_component = InputComponent()
+        self.input_component.reset()
         self.input_container.add(self.input_component)
+        self.root_component.update_layout()
 
         self.input_mode = True
         result = await self.input_component.request_value(prompt)
         self.input_component.detach()
-        self.input_component = None
         self.input_mode = False
         return result
-
-    def add_notification(self, component: Component):
-        if self.notifications_layout:
-            self.notifications_layout.add(component)
-            self.root_component.update_layout()
-
-    def show_error(self, text: str):
-        error_component = LabelComponent(
-            text,
-            align=LabelComponent.Align.left,
-            color=colors.colors['error'],
-            context='error',
-        )
-        self.add_notification(error_component)
-        self.focus(error_component)

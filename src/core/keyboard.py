@@ -24,6 +24,7 @@ KEY_CODES = {
 # add some entries missing in curses definitions
 KEY_CODES[10] = '<enter>'
 KEY_CODES[27] = '<esc>'
+KEY_CODES[32] = '<space>'
 
 def tranform_code(key: int) -> str:
     try:

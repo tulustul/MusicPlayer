@@ -17,7 +17,7 @@ logger = logging.getLogger('ui')
 class InputComponent(Component):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(size=1)
 
         self.value = Subject()
 

@@ -6,13 +6,13 @@ from ..renderer import Renderer
 
 class AbstractComponent:
 
-    def __init__(self, desired_size: int = 0):
+    def __init__(self, size: Optional[int] = None):
         self.id = None
 
         self.rect = Rect(0, 0, 0, 0)
 
         self._visible = True
-        self._desired_size = desired_size
+        self._size = size
 
         self.renderer: Optional[Renderer] = None
 
@@ -28,12 +28,12 @@ class AbstractComponent:
         self.rect = rect
 
     @property
-    def desired_size(self):
-        return self._desired_size
+    def size(self):
+        return self._size
 
-    @desired_size.setter
-    def desired_size(self, desired_size):
-        self._desired_size = desired_size
+    @size.setter
+    def size(self, size: int):
+        self._size = size
 
     def detach(self):
         if self.parent:

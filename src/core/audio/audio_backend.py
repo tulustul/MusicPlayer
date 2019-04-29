@@ -88,8 +88,8 @@ class AudioBackend:
 
     def toggle_pause(self):
         if self.current_state == self.State.playing:
-            audio.pause()
+            self.pause()
         elif self.current_state == self.State.paused:
-            audio.play()
+            self.play()
         else:
             logger.error(f'Unknown playback state "{self.current_state}"')

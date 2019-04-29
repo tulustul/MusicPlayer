@@ -20,7 +20,7 @@ def dump_layout_data(component: AbstractComponent):
     data: dict = OrderedDict(
         clazz=component.__class__.__name__,
         rect=component.rect,
-        desired_size=component.desired_size,
+        size=component.size,
     )
     if isinstance(component, Layout):
         data['childs'] = []

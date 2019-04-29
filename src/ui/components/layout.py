@@ -23,7 +23,7 @@ class Layout(AbstractComponent):
         self.childs: List[AbstractComponent] = []
         self.direction = Layout.Direction.vertical
 
-        self.old_desired_size = 0
+        self.old_size = 0
 
     def mark_for_update(self):
         if self.renderer:
@@ -55,8 +55,8 @@ class Layout(AbstractComponent):
 
         updated_layouts = set([self])
 
-        if self.old_desired_size != self.desired_size:
-            self.old_desired_size = self.desired_size
+        if self.old_size != self.size:
+            self.old_size = self.size
             if self.parent and isinstance(self.parent, Layout):
                 updated_layouts |= self.parent.update_layout()
 
@@ -69,11 +69,11 @@ class Layout(AbstractComponent):
         else:
             logger.error('Unknown layout type: {}'.format(self.direction))
 
-        fluent_childs = [c for c in self.childs if not c.desired_size]
+        fluent_childs = [c for c in self.childs if c.size is None]
 
         fluent_size = total_size - sum(
-            component.desired_size for component in self.childs
-            if component.desired_size
+            component.size for component in self.childs
+            if component.size
         )
 
         current_offset = Decimal(0)
@@ -82,8 +82,9 @@ class Layout(AbstractComponent):
             component.mark_for_redraw()
 
             decimal_size = Decimal(
-                component.desired_size or
                 max(fluent_size / len(fluent_childs), 0)
+                if component.size is None
+                else component.size
             )
             offset = int(current_offset.to_integral_value(ROUND_HALF_UP))
             size = int(decimal_size.to_integral_value(ROUND_HALF_UP))
@@ -138,14 +139,13 @@ class Layout(AbstractComponent):
         self._visible = visible
 
     @property
-    def desired_size(self):
-        logger.error(self.childs)
-        childs_desired_size = sum(
-            c.desired_size or self._desired_size
-            for c in self.childs
-        )
-        return min(self._desired_size, childs_desired_size)
+    def size(self):
+        have_fluent_childs = any(c.size is None for c in self.childs)
+        if have_fluent_childs:
+            return None
 
-    @desired_size.setter
-    def desired_size(self, desired_size):
-        self._desired_size = desired_size
+        return sum(c.size for c in self.childs if c.size)
+
+    @size.setter
+    def size(self, size):
+        self._size = size

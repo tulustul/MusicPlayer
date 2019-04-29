@@ -10,7 +10,7 @@ logger = logging.getLogger('ui')
 class ProgressComponent(Component):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(size=1, **kwargs)
 
         self.color = colors['bar']
         self.elapsed_color = colors['bar-elapsed']
@@ -19,8 +19,6 @@ class ProgressComponent(Component):
 
         self.left_text = ''
         self.right_text = ''
-
-        self.desired_size = 1
 
     @property
     def progress(self):
