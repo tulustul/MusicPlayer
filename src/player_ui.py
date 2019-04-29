@@ -20,12 +20,12 @@ class PlayerUI:
 
         # sidebar = Layout(size=30)
 
-        top_layout = Layout()
-        self.root.add(top_layout)
+        self.top_layout = Layout()
+        self.root.add(self.top_layout)
 
-        top_layout.direction = Layout.Direction.horizontal
-        # top_layout.add(sidebar)
-        top_layout.add(self.tracks_view)
+        self.top_layout.direction = Layout.Direction.horizontal
+        # self.top_layout.add(sidebar)
+        self.top_layout.add(self.tracks_view)
 
         self.stack_layout = Layout()
 

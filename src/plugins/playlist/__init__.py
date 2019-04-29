@@ -1,14 +1,14 @@
-from rx.subjects import ReplaySubject
+# from rx.subjects import ReplaySubject
 
-from core.config import config
+# from core.config import config
 
-from .views import Playlist
+# from .views import Playlist
 
-# import context
-# import stream
-# import ui
+# # import context
+# # import stream
+# # import ui
 
-playlist_view = None
+# playlist_view = None
 
 
 # def show_playlist(_):
@@ -16,7 +16,8 @@ playlist_view = None
 
 
 def init():
-    global playlist_view
+    pass
+    # global playlist_view
 
     # stream.register('playlist.tracks', ReplaySubject(1))
     # playlist_view = Playlist()

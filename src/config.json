@@ -19,8 +19,8 @@
     "library",
     "scan",
     "search",
-    "track_scheduler"
-    // "playlist",
+    "track_scheduler",
+    "playlist"
     // "errors_view",
     // "tray_menu",
     // "search"
@@ -158,6 +158,10 @@
     {
       "keys": ["d"],
       "command": "debug_dump_layout"
+    },
+    {
+      "keys": ["p"],
+      "command": "open_playlists"
     }
   ]
 }

@@ -29,8 +29,16 @@ class Layout(AbstractComponent):
         if self.renderer:
             self.renderer.schedule_layout_update(self)
 
+    def insert(self, index: int, component: AbstractComponent):
+        self.childs.insert(index, component)
+        self._on_new_child(component)
+
+    # TODO rename to "append"
     def add(self, component: AbstractComponent):
         self.childs.append(component)
+        self._on_new_child(component)
+
+    def _on_new_child(self, component: AbstractComponent):
         component.parent = self
         component.renderer = self.renderer
         if not isinstance(component, Layout):
