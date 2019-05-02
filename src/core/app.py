@@ -44,7 +44,13 @@ def log_exception(window=None):
 
 class App:
 
+    _instance: Optional['App'] = None
+
     def __init__(self):
+        assert App._instance is None
+
+        App._instance = self
+
         self.crashed = False
 
         try:
@@ -79,6 +85,10 @@ class App:
             log_exception(self.window)
             self.destroy()
             raise e
+
+    @classmethod
+    def get_instance(cls) -> 'App':
+        return cls._instance
 
     def setup(self):
         raise NotImplemented
