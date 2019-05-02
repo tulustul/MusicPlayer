@@ -33,17 +33,17 @@ class AudioBackend:
 
         self.state = ReplaySubject(1)
         self.current_track = ReplaySubject(1)
-        self.progress = ReplaySubject(1)
+        self.position = ReplaySubject(1)
         self.duration = ReplaySubject(1)
         self.end_of_track = Subject()
 
         self.end_of_track.subscribe(lambda _: logger.debug('END OF TRACK'))
 
         self.state.subscribe(self.set_state)
-        self.progress.subscribe(self.set_position)
+        self.position.subscribe(self.set_position)
         self.duration.subscribe(self.set_duration)
 
-        self.time_tracking = self.progress.pipe(map(self.make_time_tracking))
+        self.time_tracking = self.position.pipe(map(self.make_time_tracking))
 
     def destroy(self) -> None:
         raise NotImplemented
@@ -81,10 +81,13 @@ class AudioBackend:
         self.set_track(track)
         self.play()
 
-    def rewind(self, offset: int):
+    def rewind_by_seconds(self, offset: int):
         new_position = self.current_position + offset
         new_position = min(self.current_duration, max(0, new_position))
         self.seek(new_position)
+
+    def rewind_by_percentage(self, offset: float):
+        self.rewind_by_seconds(self.current_duration * offset)
 
     def toggle_pause(self):
         if self.current_state == self.State.playing:

@@ -84,12 +84,12 @@
       "command": "navigate_previous_page"
     },
     {
-      "keys": ["<down>"],
+      "keys": ["<down>", "j"],
       "command": "navigate_list_by",
       "args": [1]
     },
     {
-      "keys": ["<up>"],
+      "keys": ["<up>", "k"],
       "command": "navigate_list_by",
       "args": [-1]
     },
@@ -107,24 +107,44 @@
       "command": "pause_track"
     },
     {
-      "keys": ["<left>"],
-      "command": "rewind",
-      "args": [-10]
+      "keys": ["<left>", "h"],
+      "command": "rewind_by_seconds",
+      "args": [-5]
     },
     {
-      "keys": ["<right>"],
-      "command": "rewind",
-      "args": [10]
+      "keys": ["<right>", "l"],
+      "command": "rewind_by_seconds",
+      "args": [5]
     },
     {
-      "keys": ["[>"],
-      "command": "rewind",
+      "keys": ["["],
+      "command": "rewind_by_seconds",
       "args": [-30]
     },
     {
       "keys": ["]"],
-      "command": "rewind",
+      "command": "rewind_by_seconds",
       "args": [30]
+    },
+    {
+      "keys": ["z"],
+      "command": "rewind_by_percentage",
+      "args": [-0.2]
+    },
+    {
+      "keys": ["x"],
+      "command": "rewind_by_percentage",
+      "args": [0.2]
+    },
+    {
+      "keys": ["c"],
+      "command": "rewind_to_percentage",
+      "args": [0.5]
+    },
+    {
+      "keys": ["v"],
+      "command": "rewind_to_percentage",
+      "args": [0.0]
     },
     {
       "keys": ["p"],
@@ -160,7 +180,7 @@
       "command": "debug_dump_layout"
     },
     {
-      "keys": ["p"],
+      "keys": ["P"],
       "command": "open_playlists"
     }
   ]

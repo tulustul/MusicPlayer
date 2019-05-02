@@ -48,7 +48,8 @@ class GstAudioBackend(AudioBackend):
     def set_track(self, track: Track):
         self.pipeline.set_state(Gst.State.READY)
         self.playbin.set_property('uri', track.uri)
-        self.progress.on_next(0)
+        self.duration.on_next(track.length)
+        self.position.on_next(0)
 
     def seek(self, position: int):
         self.playbin.seek_simple(
@@ -56,7 +57,7 @@ class GstAudioBackend(AudioBackend):
             Gst.SeekFlags.FLUSH,
             position * Gst.SECOND,
         )
-        self.progress.on_next(position)
+        self.position.on_next(position)
 
     def play(self):
         self.pipeline.set_state(Gst.State.PLAYING)
@@ -84,7 +85,7 @@ class GstAudioBackend(AudioBackend):
             if self.playing:
                 success, position = self.playbin.query_position(Gst.Format.TIME)
                 if success:
-                    self.progress.on_next(position / Gst.SECOND)
+                    self.position.on_next(position / Gst.SECOND)
 
     def on_eos(self, *args):
         self.playing = False
