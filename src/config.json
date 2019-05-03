@@ -19,9 +19,9 @@
     "library",
     "scan",
     "track_scheduler",
-    "playlist"
+    "playlist",
+    "search"
     // "tray_menu",
-    // "search"
   ],
 
   "cloud": [],

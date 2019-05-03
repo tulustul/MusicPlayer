@@ -1,6 +1,8 @@
 import math
 import logging
+from typing import Optional, Any
 
+from core.app import App
 from core import config, utils
 
 from .listview import ListComponent
@@ -25,10 +27,21 @@ class TableComponent(ListComponent):
         self.borders_color = colors['table-borders']
         self.borders_selected_color = colors['table-borders-selected']
         self.header_borders = colors['table-header-borders']
+        self.highlighted_color = colors['highlighted-item']
+        self.highlighted_selected_color = colors['highlighted-selected-item']
 
         self.border = config.theme['strings']['border-vertical']
 
+        self.highlighted_item: Optional[Any] = None
+
+        app = App.get_instance()
+        app.audio.current_track.subscribe(self.set_highlighed_item)
+
         super().__init__(**kwargs)
+
+    def set_highlighed_item(self, item: Any):
+        self.highlighted_item = item
+        self.mark_for_redraw()
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
@@ -58,11 +71,17 @@ class TableComponent(ListComponent):
             formatter = FORMATS.get(column.get('format'), default_format)
 
             for y, entry in page_data:
+                is_selected = entry == self.highlighted_item
                 if y + self.min_index == self.index:
-                    color = self.selected_color
+                    color = (
+                        self.highlighted_selected_color
+                        if is_selected else self.selected_color
+                    )
                     border_color = self.borders_selected_color
                 else:
-                    color = self.color
+                    color = (
+                        self.highlighted_color if is_selected else self.color
+                    )
                     border_color = self.borders_color
 
                 text = formatter(getattr(entry, column['field'], ''))
