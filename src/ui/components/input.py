@@ -21,7 +21,7 @@ class InputComponent(Component):
 
         self.value = Subject()
 
-        self.reset()
+        self.set_value('')
 
         raw_keys.subscribe(self.handle_key)
 
@@ -31,10 +31,6 @@ class InputComponent(Component):
         self.future: Optional[asyncio.Future] = None
 
         self.prompt = ''
-
-    def reset(self):
-        self.set_value('')
-        self.cursor = len(self.text) - 1
 
     def draw_content(self):
         offset = len(self.prompt) + 1
@@ -100,9 +96,9 @@ class InputComponent(Component):
         if self.win:
             self.mark_for_redraw()
 
-    def request_value(self, prompt: str):
+    def request_value(self, prompt: str, default_value=''):
         self.prompt = prompt
-        self.set_value('')
+        self.set_value(default_value)
         self.future = asyncio.get_event_loop().create_future()
         self.mark_for_redraw()
         self.visible = True

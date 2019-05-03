@@ -1,31 +1,32 @@
 import random
 
+from player_ui import PlayerUI
 from commands.decorator import command
 from ui.window import Window
 from core.audio import AudioBackend
 
 
 @command()
-def next_track(window: Window, audio: AudioBackend):
-    if window.active_component.is_last:
-      window.active_component.set_index(0)
+def next_track(ui: PlayerUI, audio: AudioBackend):
+    if ui.tracks_view.is_last:
+      ui.tracks_view.set_index(0)
     else:
-      window.active_component.go_by(1)
+      ui.tracks_view.go_by(1)
 
-    audio.play_track(window.active_component.value)
+    audio.play_track(ui.tracks_view.value)
 
 
 @command()
-def previous_track(window: Window, audio: AudioBackend):
-    if window.active_component.is_first:
-        window.active_component.set_index(len(window.active_component.filtered_data))
+def previous_track(ui: PlayerUI, audio: AudioBackend):
+    if ui.tracks_view.is_first:
+        ui.tracks_view.set_index(len(ui.tracks_view.filtered_data))
     else:
-        window.active_component.go_by(-1)
-    audio.play_track(window.active_component.value)
+        ui.tracks_view.go_by(-1)
+    audio.play_track(ui.tracks_view.value)
 
 
 @command()
-def random_track(window: Window, audio: AudioBackend):
-    new_index = random.randrange(len(window.active_component.filtered_data))
-    window.active_component.set_index(new_index)
-    audio.play_track(window.active_component.value)
+def random_track(ui: PlayerUI, audio: AudioBackend):
+    new_index = random.randrange(len(ui.tracks_view.filtered_data))
+    ui.tracks_view.set_index(new_index)
+    audio.play_track(ui.tracks_view.value)

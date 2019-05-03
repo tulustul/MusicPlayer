@@ -104,16 +104,15 @@ class Window:
     def quit(self):
         self.running = False
 
-    async def input(self, prompt: str):
+    async def input(self, prompt: str, default_value=''):
         if not self.input_container:
             raise ValueError('No input_container')
 
-        self.input_component.reset()
         self.input_container.add(self.input_component)
         self.root_component.update_layout()
 
         self.input_mode = True
-        result = await self.input_component.request_value(prompt)
+        result = await self.input_component.request_value(prompt, default_value)
         self.input_component.detach()
         self.input_mode = False
         return result

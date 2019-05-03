@@ -104,8 +104,6 @@ class GstAudioBackend(AudioBackend):
             self.duration.on_next(duration / Gst.SECOND)
 
     def on_message(self, message):
-        # structure = message.get_structure()
-        # logger.debug('MESSAGE {}'.format(message.type))
         if message.type == Gst.MessageType.DURATION_CHANGED:
             self.on_duration_changed()
 
@@ -114,18 +112,3 @@ class GstAudioBackend(AudioBackend):
 
         elif message.type == Gst.MessageType.ERROR:
             self.on_error()
-
-        # if structure:
-            # structure_name = structure.get_name()
-            # logger.debug('structure {}'.format(structure_name))
-            # for i in range(structure.n_fields()):
-            #    `` field_name = structure.nth_field_name(i)
-            #     field_value = structure[field_name]
-            #     logger.debug('{}: {}'.format(field_name, field_value))
-            #     if field_value.__class__ == Gst.TagList:
-            #         logger.debug(field_value.to_string())
-                    # logger.debug(field_value.__dict__)
-                    # for j in range(field_value.n_tags()):
-                    #     tag_name = field_value.nth_tag_name(j)
-                    #     tag_value = field_value.get_value(tag_name)
-                    #     logger.debug('{}: {}'.format(tag_name, tag_value))
