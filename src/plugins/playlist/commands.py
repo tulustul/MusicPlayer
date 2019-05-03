@@ -6,13 +6,11 @@ from player_ui import PlayerUI
 
 from ui.components.label import LabelComponent
 
+from .controller import PlaylistController
 
-@command()
-async def open_playlists(ui: PlayerUI, window: Window):
-    playlists_view = LabelComponent(
-      'Playlists',
-      align=LabelComponent.Align.center,
-      size=40,
-    )
 
-    ui.top_layout.insert(0, playlists_view)
+class PlaylistCommands:
+
+    @command()
+    async def toggle_playlists(controller: PlaylistController):
+        controller.toggle_playlists()

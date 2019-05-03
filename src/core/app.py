@@ -58,10 +58,10 @@ class App:
 
             self.loop = asyncio.get_event_loop()
             self.audio = audio.GstAudioBackend()
-            self.window = Window(self.loop)
+            self.window = Window()
             self.injector = dependency_injection.Injector()
 
-            plugging.load_plugins(self.loop)
+            plugging.load_plugins()
 
             self.commander = commands_runner.CommandsRunner(
                 self.loop, self.injector,
@@ -73,13 +73,15 @@ class App:
             if config['log_level'] == 'DEBUG':
                 self.loop.set_debug(True)
             db.init()
-            plugging.init_plugins()
+
+            self.setup()
+
+            plugging.start_plugins()
 
             context.push(config['default_context'])
 
             core_providers.register_core_providers(self)
 
-            self.setup()
         except Exception as e:
             self.crashed = True
             log_exception(self.window)

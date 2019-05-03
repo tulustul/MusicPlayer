@@ -18,10 +18,8 @@
     "commands_palette",
     "library",
     "scan",
-    "search",
     "track_scheduler",
     "playlist"
-    // "errors_view",
     // "tray_menu",
     // "search"
   ],
@@ -29,7 +27,6 @@
   "cloud": [],
 
   "playlist": {
-    "open_in": "mainview",
     "columns": [
       {
         "field": "track_number",
@@ -92,10 +89,6 @@
       "keys": ["<up>", "k"],
       "command": "navigate_list_by",
       "args": [-1]
-    },
-    {
-      "keys": ["<right>"],
-      "command": "autocomplete_input"
     },
     {
       "keys": ["<enter>"],
@@ -181,7 +174,7 @@
     },
     {
       "keys": ["P"],
-      "command": "open_playlists"
+      "command": "toggle_playlists"
     }
   ]
 }

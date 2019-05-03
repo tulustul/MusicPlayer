@@ -10,6 +10,7 @@ class Injector:
 
     def provide(self, token: Any, provider: Callable):
         self.providers[token] = provider
+        logger.info(self.providers)
 
     def get(self, token: Any):
         if token not in self.providers:

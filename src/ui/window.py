@@ -22,9 +22,7 @@ os.environ.setdefault('ESCDELAY', '25')
 
 class Window:
 
-    def __init__(self, loop: asyncio.AbstractEventLoop):
-        self.loop = loop
-
+    def __init__(self):
         self.components: Dict[object, Component] = {}
 
         self.active_component_stack: List[Component] = []
