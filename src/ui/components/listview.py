@@ -59,6 +59,14 @@ class ListComponent(Component):
     def list_size(self):
         return self.rect.height
 
+    @property
+    def is_first(self):
+        return self.index == 0
+
+    @property
+    def is_last(self):
+        return self.index == len(self.filtered_data) - 1
+
     def go_by(self, offset):
         self.set_index(self.index + offset)
 
