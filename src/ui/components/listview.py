@@ -60,11 +60,8 @@ class ListComponent(Component):
         return self.rect.height
 
     @property
-    def is_first(self):
-        return self.index == 0
-
-    @property
-    def is_last(self):
+    def highlighted_item_index(self):
+        return self.filtered_data.index(self.hig)
         return self.index == len(self.filtered_data) - 1
 
     def go_by(self, offset):
@@ -82,8 +79,18 @@ class ListComponent(Component):
     def previous_page(self):
         self.set_index(self.index - self.list_size)
 
+    def limit_index(self, current_index: int, new_index: int):
+        return max(0, min(new_index, len(self.filtered_data) - 1))
+
+    def wrap_index(self, index: int):
+        if index < 0:
+            return len(self.filtered_data) - 1
+        if index >= len(self.filtered_data):
+            return 0
+        return index
+
     def set_index(self, new_index):
-        self.index = max(0, min(new_index, len(self.filtered_data) - 1))
+        self.index = self.limit_index(self.index, new_index)
         self.page = self.index // self.list_size
         self.mark_for_redraw()
 

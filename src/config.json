@@ -175,6 +175,10 @@
     {
       "keys": ["P"],
       "command": "toggle_playlists"
+    },
+    {
+      "keys": ["g"],
+      "command": "find_playing_track"
     }
   ]
 }
