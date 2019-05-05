@@ -2,6 +2,7 @@
 import asyncio
 import logging
 
+from commands import core_commands
 from core.app import App
 from player_ui import PlayerUI
 

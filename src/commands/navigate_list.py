@@ -31,3 +31,8 @@ def navigate_next_page(list_component: ListComponent):
 def navigate_previous_page(list_component: ListComponent):
     if list_component:
         list_component.previous_page()
+
+
+@command()
+def select_list_item(list_component: ListComponent):
+    list_component.select()

@@ -2,13 +2,14 @@ import logging
 
 from core import db
 from ui.components.listview import ListComponent
+from plugins.library.views import TracksComponent
 
 from .models import Playlist
 
 logger = logging.getLogger('plugins.playlist')
 
 
-class PlaylistComponent(ListComponent):
+class PlaylistsComponent(ListComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -27,3 +28,10 @@ class PlaylistComponent(ListComponent):
 
     def query(self, query):
         return list(zip(*query))[0]
+
+
+class PlaylistTracksComponent(TracksComponent):
+
+    def __init__(self, playlist: Playlist, **kwargs):
+        super().__init__(**kwargs)
+        self.playlist = playlist

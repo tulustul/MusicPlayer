@@ -92,8 +92,7 @@
     },
     {
       "keys": ["<enter>"],
-      "command": "play_track",
-      "context": "tracks"
+      "command": "select_list_item"
     },
     {
       "keys": ["<space>"],
@@ -179,6 +178,10 @@
     {
       "keys": ["g"],
       "command": "find_playing_track"
+    },
+    {
+      "keys": ["<tab>"],
+      "command": "focus_next_view"
     }
   ]
 }

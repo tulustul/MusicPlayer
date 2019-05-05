@@ -32,7 +32,7 @@ class TableComponent(ListComponent):
 
         self.border = config.theme['strings']['border-vertical']
 
-        self.highlighted_item: Optional[Any] = None
+        self._highlighted_item: Optional[Any] = None
 
         app = App.get_instance()
         app.audio.current_track.subscribe(self.set_highlighed_item)
@@ -40,7 +40,7 @@ class TableComponent(ListComponent):
         super().__init__(**kwargs)
 
     def set_highlighed_item(self, item: Any):
-        self.highlighted_item = item
+        self._highlighted_item = item
         self.mark_for_redraw()
 
     def draw_content(self):
@@ -71,7 +71,7 @@ class TableComponent(ListComponent):
             formatter = FORMATS.get(column.get('format'), default_format)
 
             for y, entry in page_data:
-                is_selected = entry == self.highlighted_item
+                is_selected = entry == self._highlighted_item
                 if y + self.min_index == self.index:
                     color = (
                         self.highlighted_selected_color

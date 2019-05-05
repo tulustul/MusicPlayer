@@ -3,27 +3,31 @@ import logging
 from sqlalchemy import or_
 
 from ui.components.table import TableComponent
+from core.app import App
 from core.config import config
 from core import db
 
 from .models import Track
 
-logger = logging.getLogger('ui')
+logger = logging.getLogger('plugins.library')
 
 
-class LibraryComponent(TableComponent):
+class TracksComponent(TableComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        self.data = list(db.session.query(Track))
-
         self.columns = config['playlist']['columns']
 
-    def set_tracks(self, tracks):
-        logger.info('tracks: {}'.format(len(tracks)))
-        self.data = tracks
-        self.refresh()
+    def select(self):
+        super().select()
+        App.get_instance().audio.play_track(self.value)
+
+
+class LibraryComponent(TracksComponent):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.data = list(db.session.query(Track))
 
     def filter(self, query: str):
         if not db.session:

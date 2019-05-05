@@ -8,11 +8,6 @@ from .decorator import command
 logger = logging.getLogger('commands')
 
 @command()
-def play_track(window: Window, audio: AudioBackend):
-    audio.play_track(window.active_component.value)
-
-
-@command()
 def pause_track(audio: AudioBackend):
     audio.toggle_pause()
 

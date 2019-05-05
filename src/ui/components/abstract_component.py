@@ -6,7 +6,7 @@ from ..renderer import Renderer
 
 class AbstractComponent:
 
-    def __init__(self, size: Optional[int] = None):
+    def __init__(self, size: Optional[int] = None, display_name=''):
         self.id = None
 
         self.rect = Rect(0, 0, 0, 0)
@@ -17,6 +17,8 @@ class AbstractComponent:
         self.renderer: Optional[Renderer] = None
 
         self.parent: Optional[AbstractComponent] = None
+
+        self.display_name = display_name
 
     def mark_for_redraw(self):
         pass
@@ -38,3 +40,6 @@ class AbstractComponent:
     def detach(self):
         if self.parent:
             self.parent.remove(self)
+
+    def set_renderer(self, renderer: Optional[Renderer]):
+        self.renderer = renderer

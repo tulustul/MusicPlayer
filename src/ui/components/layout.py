@@ -4,7 +4,7 @@ import logging
 from typing import List, Tuple, Optional, Set
 
 from core.errors import errors
-import ui
+from ui.renderer import Renderer
 
 from .abstract_component import AbstractComponent
 from ..rect import Rect
@@ -12,22 +12,54 @@ from ..rect import Rect
 logger = logging.getLogger(name='ui')
 
 
-class Layout(AbstractComponent):
+class AbstractLayout(AbstractComponent):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.childs: List[AbstractComponent] = []
+
+    def update_layout(self) -> set:
+        raise NotImplemented
+
+    def mark_for_update(self):
+        if self.renderer:
+            self.renderer.schedule_layout_update(self)
+
+    def set_renderer(self, renderer: Optional[Renderer]):
+        super().set_renderer(renderer)
+        for child in self.childs:
+            child.set_renderer(renderer)
+
+    @property
+    def child_layouts(self):
+        yield from (
+            child for child in self.childs
+            if isinstance(child, AbstractLayout)
+        )
+
+    def get_descendants(self):
+        for component in self.childs:
+            if isinstance(component, AbstractLayout):
+                yield from component.get_descendants()
+            else:
+                yield component
+
+    def get_component(self, component_class: type):
+        for component in self.get_descendants():
+            if isinstance(component, component_class):
+                return component
+
+
+class Layout(AbstractLayout):
 
     class Direction(Enum):
         horizontal = 1
         vertical = 2
 
-    def __init__(self, **kwargs):
+    def __init__(self, direction=Direction.vertical, **kwargs):
         super().__init__(**kwargs)
-        self.childs: List[AbstractComponent] = []
-        self.direction = Layout.Direction.vertical
-
+        self.direction = direction
         self.old_size = 0
-
-    def mark_for_update(self):
-        if self.renderer:
-            self.renderer.schedule_layout_update(self)
 
     def insert(self, index: int, component: AbstractComponent):
         self.childs.insert(index, component)
@@ -40,7 +72,7 @@ class Layout(AbstractComponent):
 
     def _on_new_child(self, component: AbstractComponent):
         component.parent = self
-        component.renderer = self.renderer
+        component.set_renderer(self.renderer)
         if not isinstance(component, Layout):
             component.mark_for_redraw()
         self.mark_for_update()
@@ -65,7 +97,7 @@ class Layout(AbstractComponent):
 
         if self.old_size != self.size:
             self.old_size = self.size
-            if self.parent and isinstance(self.parent, Layout):
+            if self.parent and isinstance(self.parent, AbstractLayout):
                 updated_layouts |= self.parent.update_layout()
 
         if self.direction == Layout.Direction.horizontal:
@@ -118,33 +150,6 @@ class Layout(AbstractComponent):
             updated_layouts |= child_layout.update_layout()
 
         return updated_layouts
-
-    @property
-    def child_layouts(self):
-        yield from (
-            child for child in self.childs
-            if isinstance(child, Layout)
-        )
-
-    def get_descendants(self):
-        for component in self.childs:
-            if isinstance(component, Layout):
-                yield from component.get_descendants()
-            else:
-                yield component
-
-    def get_component(self, component_class: type):
-        for component in self.get_descendants():
-            if isinstance(component, component_class):
-                return component
-
-    @property
-    def visible(self):
-        return bool(self._visible and self.childs)
-
-    @visible.setter
-    def visible(self, visible):
-        self._visible = visible
 
     @property
     def size(self):

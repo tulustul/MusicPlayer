@@ -1,5 +1,7 @@
 import logging
 
+from rx.subjects import Subject
+
 from .component import Component
 from ..colors import colors
 
@@ -19,6 +21,10 @@ class ListComponent(Component):
         self.index = 0
 
         self.selected_color = colors['selected']
+
+        self.selected_item = Subject()
+
+        self.highlighted_item = Subject()
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
@@ -61,8 +67,7 @@ class ListComponent(Component):
 
     @property
     def highlighted_item_index(self):
-        return self.filtered_data.index(self.hig)
-        return self.index == len(self.filtered_data) - 1
+        return self.filtered_data.index(self.highlighted_item)
 
     def go_by(self, offset):
         self.set_index(self.index + offset)
@@ -92,7 +97,11 @@ class ListComponent(Component):
     def set_index(self, new_index):
         self.index = self.limit_index(self.index, new_index)
         self.page = self.index // self.list_size
+        self.highlighted_item.on_next(self.value)
         self.mark_for_redraw()
+
+    def select(self):
+        self.selected_item.on_next(self.value)
 
     def filter(self, term: str):
         tokens = term.split()

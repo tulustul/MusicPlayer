@@ -11,7 +11,7 @@ def get_curses_key_definitions():
 
 
 def get_key_binding_name(key_name: str):
-    # KEY_ENTER -> <enter>
+    # e.g. KEY_ENTER -> <enter>
     name = key_name[len('KEY_'):].lower()
     return f'<{name}>'
 
@@ -22,6 +22,7 @@ KEY_CODES = {
 }
 
 # add some entries missing in curses definitions
+KEY_CODES[9] = '<tab>'
 KEY_CODES[10] = '<enter>'
 KEY_CODES[27] = '<esc>'
 KEY_CODES[32] = '<space>'

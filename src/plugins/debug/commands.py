@@ -4,7 +4,7 @@ import pprint
 
 from commands.decorator import command
 from ui.window import Window
-from ui.components.layout import Layout
+from ui.components.layout import AbstractLayout
 from ui.components.component import AbstractComponent
 
 logger = logging.getLogger('plugins.debug')
@@ -22,7 +22,7 @@ def dump_layout_data(component: AbstractComponent):
         rect=component.rect,
         size=component.size,
     )
-    if isinstance(component, Layout):
+    if isinstance(component, AbstractLayout):
         data['childs'] = []
         for child in component.childs:
             data['childs'].append(dump_layout_data(child))
