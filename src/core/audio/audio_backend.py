@@ -46,19 +46,19 @@ class AudioBackend:
         self.time_tracking = self.position.pipe(map(self.make_time_tracking))
 
     def destroy(self) -> None:
-        raise NotImplemented
+        raise NotImplementedError
 
     def set_track(self, track: Track) -> None:
-        raise NotImplemented
+        raise NotImplementedError
 
     def seek(self, position: int) -> None:
-        raise NotImplemented
+        raise NotImplementedError
 
     def play(self) -> None:
-        raise NotImplemented
+        raise NotImplementedError
 
     def pause(self) -> None:
-        raise NotImplemented
+        raise NotImplementedError
 
     def make_time_tracking(self, position: int):
         return TimeTrack(

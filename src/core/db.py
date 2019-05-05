@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
 
+from typing import cast
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 from core.config import config
@@ -21,3 +23,7 @@ def init():
     Base.metadata.create_all(engine)
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
+
+
+def get_session() -> Session:
+    return cast(Session, session)

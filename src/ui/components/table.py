@@ -1,6 +1,6 @@
 import math
 import logging
-from typing import Optional, Any
+from typing import Optional, Any, Generic, TypeVar
 
 from core.app import App
 from core import config, utils
@@ -17,8 +17,10 @@ FORMATS = {
 def default_format(value):
     return str(value or '')
 
+T = TypeVar('T')
 
-class TableComponent(ListComponent):
+
+class TableComponent(Generic[T], ListComponent[T]):
 
     def __init__(self, **kwargs):
         self._columns = []
@@ -32,14 +34,14 @@ class TableComponent(ListComponent):
 
         self.border = config.theme['strings']['border-vertical']
 
-        self._highlighted_item: Optional[Any] = None
+        self._highlighted_item: Optional[T] = None
 
         app = App.get_instance()
         app.audio.current_track.subscribe(self.set_highlighed_item)
 
         super().__init__(**kwargs)
 
-    def set_highlighed_item(self, item: Any):
+    def set_highlighed_item(self, item: T):
         self._highlighted_item = item
         self.mark_for_redraw()
 

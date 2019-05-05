@@ -18,10 +18,10 @@ def toggle_playlists(controller: PlaylistController):
 
 @command()
 async def create_playlist(window: Window):
-    playlists_count = db.session.query(Playlist).count()
+    playlists_count = db.get_session().query(Playlist).count()
     default_name = f'playlist {playlists_count + 1}'
     playlist_name = await window.input('new playlist name:', default_name)
 
     playlist = Playlist(name=playlist_name)
-    db.session.add(playlist)
-    db.session.commit()
+    db.get_session().add(playlist)
+    db.get_session().commit()

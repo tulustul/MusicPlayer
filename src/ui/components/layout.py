@@ -19,7 +19,7 @@ class AbstractLayout(AbstractComponent):
         self.childs: List[AbstractComponent] = []
 
     def update_layout(self) -> set:
-        raise NotImplemented
+        raise NotImplementedError
 
     def mark_for_update(self):
         if self.renderer:

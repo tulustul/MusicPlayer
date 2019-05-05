@@ -12,7 +12,7 @@ from .models import Track
 logger = logging.getLogger('plugins.library')
 
 
-class TracksComponent(TableComponent):
+class TracksComponent(TableComponent[Track]):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

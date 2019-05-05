@@ -5,7 +5,7 @@ import sys
 import traceback
 import logging
 import curses
-from typing import Optional
+from typing import Optional, cast
 
 import setproctitle
 
@@ -90,10 +90,10 @@ class App:
 
     @classmethod
     def get_instance(cls) -> 'App':
-        return cls._instance
+        return cast(App, cls._instance)
 
     def setup(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def run_forever(self):
         try:

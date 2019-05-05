@@ -12,14 +12,15 @@ from sqlalchemy import exists
 from core import db
 from commands.decorator import command
 from plugins import library
-from ui.window import Window
+from player_ui import PlayerUI
 from ui.components.progress import ProgressComponent
+from ui.window import Window
 
 logger = logging.getLogger('plugins.scan')
 
 
 @command()
-async def scan_local_files(window: Window):
+async def scan_local_files(window: Window, ui: PlayerUI):
     path = await window.input('path:')
 
     if not path:
@@ -28,7 +29,7 @@ async def scan_local_files(window: Window):
     progress_component = ProgressComponent()
     progress_component.set_text('listing files...')
 
-    window.add_notification(progress_component)
+    ui.stack_layout.add(progress_component)
 
     files = glob.iglob(f'{path}/**/*.*', recursive=True)
 
@@ -40,8 +41,6 @@ async def scan_local_files(window: Window):
         None, functools.partial(create_tracks, progress_component, list(files)),
     )
 
-    # library.load_library()
-
     progress_component.detach()
 
     logger.info('Scan done')
@@ -49,7 +48,7 @@ async def scan_local_files(window: Window):
 
 def create_tracks(progress_component: ProgressComponent, files: List[str]):
     total = len(files)
-    tracks: List[Track] = []
+    tracks: List[library.models.Track] = []
     for f in files:
         track = create_track(f)
         if track:

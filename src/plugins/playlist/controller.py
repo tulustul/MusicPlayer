@@ -37,7 +37,7 @@ class PlaylistController:
             self.subscription = self.playlists_view.selected_item.subscribe(self.open_playlist)
 
     def open_playlist(self, playlist_name: str):
-        playlist = db.session.query(Playlist).filter(
+        playlist = db.get_session().query(Playlist).filter(
             Playlist.name == playlist_name,
         ).one()
 

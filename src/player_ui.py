@@ -12,6 +12,7 @@ from ui.components.tabs_layout import TabsLayout, Tab
 class PlayerUI:
 
     def __init__(self, app: App):
+        self.app = app
         self.root = app.window.root_component
 
         self.bar_component = BarComponent(app.audio)
@@ -47,4 +48,4 @@ class PlayerUI:
             size=1,
         )
         self.stack_layout.add(error_component)
-        self.focus(error_component)
+        self.app.window.focus(error_component)

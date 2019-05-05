@@ -14,7 +14,7 @@ def focus_next_view(ui: PlayerUI, window: Window):
     if len(window.active_component_stack) > 1:
         component = window.active_component_stack.pop()
         window.active_component_stack.insert(0, component)
-    else:
+    elif ui.tabs_layout.displayed_tab:
         tab_index = ui.tabs_layout.tabs.index(ui.tabs_layout.displayed_tab)
         if tab_index != -1:
             new_index = tab_index + 1

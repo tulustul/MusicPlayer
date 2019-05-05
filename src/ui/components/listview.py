@@ -1,20 +1,27 @@
 import logging
+from typing import List, Generic, TypeVar
 
 from rx.subjects import Subject
+
+from core.clipboard import Clipboard
 
 from .component import Component
 from ..colors import colors
 
 logger = logging.getLogger('ui')
 
+T = TypeVar('T')
 
-class ListComponent(Component):
+
+class ListComponent(Generic[T], Component):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._data = []
+        self._data: List[T] = []
 
-        self.filtered_data = []
+        self.filtered_data: List[T] = []
+
+        self.marked_items: List[T] = []
 
         self.page = 0
 
@@ -45,7 +52,7 @@ class ListComponent(Component):
         return self._data
 
     @data.setter
-    def data(self, data):
+    def data(self, data: List[T]):
         self._data = data
         self.filtered_data = data
 
@@ -58,7 +65,10 @@ class ListComponent(Component):
         return self.min_index + self.list_size
 
     @property
-    def value(self):
+    def value(self) -> T:
+        return self.filtered_data[self.index]
+
+    def get_value(self) -> T:
         return self.filtered_data[self.index]
 
     @property
@@ -112,3 +122,17 @@ class ListComponent(Component):
         else:
             self.filtered_data = self.data[:]
         self.mark_for_redraw()
+
+    def copy_items(self):
+        if self.marked_items:
+            Clipboard.get_instance().put(self.marked_items)
+
+    def cut_items(self):
+        self.copy_items()
+        self.delete_items()
+
+    def delete_items(self):
+        raise NotImplementedError
+
+    def paste_items(self, items: List[T]):
+        raise NotImplementedError
