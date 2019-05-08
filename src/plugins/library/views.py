@@ -27,6 +27,10 @@ class LibraryComponent(TracksComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        app = App.get_instance()
+        app.audio.current_track.subscribe(self.set_distinguished_item)
+
         self.data = list(db.session.query(Track))
 
     def filter(self, query: str):

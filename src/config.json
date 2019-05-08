@@ -134,7 +134,7 @@
       "args": [0.5]
     },
     {
-      "keys": ["v"],
+      "keys": ["s"],
       "command": "rewind_to_percentage",
       "args": [0.0]
     },
@@ -182,6 +182,22 @@
     {
       "keys": ["<tab>"],
       "command": "focus_next_view"
+    },
+    {
+      "keys": ["v"],
+      "command": "toggle_visual_mode"
+    },
+    {
+      "keys": ["V"],
+      "command": "inverse_selection"
+    },
+    {
+      "keys": ["m"],
+      "command": "mark_item"
+    },
+    {
+      "keys": ["M"],
+      "command": "unmark_all_items"
     }
   ]
 }

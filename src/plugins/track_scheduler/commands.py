@@ -25,14 +25,14 @@ def random_track(ui: PlayerUI, audio: AudioBackend):
 
 @command()
 def find_playing_track(ui: PlayerUI):
-    current_item = ui.tracks_view.highlighted_item
+    current_item = ui.tracks_view.distinguished_item
     if current_item:
         index = ui.tracks_view.filtered_data.index(current_item)
         ui.tracks_view.set_index(index)
 
 
 def skip_tracks_by(ui: PlayerUI, audio: AudioBackend, offset: int):
-    current_item = ui.tracks_view.highlighted_item
+    current_item = ui.tracks_view.distinguished_item
     if current_item:
         index = ui.tracks_view.filtered_data.index(current_item)
         new_index = ui.tracks_view.wrap_index(index + offset)
@@ -41,5 +41,5 @@ def skip_tracks_by(ui: PlayerUI, audio: AudioBackend, offset: int):
         track = ui.tracks_view.filtered_data[0]
 
     if track:
-        ui.tracks_view.highlighted_item = track
+        ui.tracks_view.distinguished_item = track
         audio.play_track(track)

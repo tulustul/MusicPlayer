@@ -109,5 +109,5 @@ class TabsHeaderComponent(Component):
             self.draw_text(tabs_chars, 0, x, chars_count)
 
             current_index = self.tabs_layout.tabs.index(tab)
-            color = colors['highlighted-item']
+            color = colors['distinguished-item']
             self.draw_text(str(current_index + 1), 0, x + current_index * 2, 1, color)

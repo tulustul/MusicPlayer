@@ -1,5 +1,5 @@
 import logging
-from typing import List, Generic, TypeVar
+from typing import List, Set, Generic, TypeVar
 
 from rx.subjects import Subject
 
@@ -17,21 +17,28 @@ class ListComponent(Generic[T], Component):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self._data: List[T] = []
 
         self.filtered_data: List[T] = []
 
-        self.marked_items: List[T] = []
+        # Item selected by the user
+        self.selected_item = Subject()
+
+        # e.g. currently playing track
+        self.distinguished_item: Optional[T] = None
+
+        # Item at "index" position
+        self.focused_item = Subject()
+
+        # Items marked in visual mode
+        self.marked_items: Set[T] = set()
+
+        self.visual_mode = False
 
         self.page = 0
 
         self.index = 0
-
-        self.selected_color = colors['selected']
-
-        self.selected_item = Subject()
-
-        self.highlighted_item = Subject()
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
@@ -39,13 +46,23 @@ class ListComponent(Generic[T], Component):
 
         self.win.clear()
 
-        for i, entry in page_data:
-            if i + self.min_index == self.index:
-                color = self.selected_color
-            else:
-                color = self.color
+        for i, item in page_data:
+            color = self.get_item_color(item)
+            self.win.addstr(i, 0, item, color)
 
-            self.win.addstr(i, 0, entry, color)
+    def get_item_color(self, item: T):
+        if self.value == item:
+            if item == self.distinguished_item:
+                return colors['distinguished-selected-item']
+            return colors['selected']
+
+        if item in self.marked_items:
+            return colors['marked']
+
+        if item == self.distinguished_item:
+            return colors['distinguished-item']
+
+        return colors['normal']
 
     @property
     def data(self):
@@ -55,6 +72,10 @@ class ListComponent(Generic[T], Component):
     def data(self, data: List[T]):
         self._data = data
         self.filtered_data = data
+
+    def set_distinguished_item(self, item: T):
+        self.distinguished_item = item
+        self.mark_for_redraw()
 
     @property
     def min_index(self):
@@ -74,10 +95,6 @@ class ListComponent(Generic[T], Component):
     @property
     def list_size(self):
         return self.rect.height
-
-    @property
-    def highlighted_item_index(self):
-        return self.filtered_data.index(self.highlighted_item)
 
     def go_by(self, offset):
         self.set_index(self.index + offset)
@@ -105,9 +122,17 @@ class ListComponent(Generic[T], Component):
         return index
 
     def set_index(self, new_index):
+        old_index = self.index
         self.index = self.limit_index(self.index, new_index)
         self.page = self.index // self.list_size
-        self.highlighted_item.on_next(self.value)
+        self.focused_item.on_next(self.value)
+
+        if self.visual_mode:
+            lower_index = min(old_index, self.index)
+            upper_index = max(old_index, self.index)
+            items_to_add = set(self.filtered_data[lower_index:upper_index + 1])
+            self.marked_items |= items_to_add
+
         self.mark_for_redraw()
 
     def select(self):
@@ -123,6 +148,9 @@ class ListComponent(Generic[T], Component):
             self.filtered_data = self.data[:]
         self.mark_for_redraw()
 
+    def toggle_visual_mode(self):
+        self.visual_mode = not self.visual_mode
+
     def copy_items(self):
         if self.marked_items:
             Clipboard.get_instance().put(self.marked_items)
@@ -134,5 +162,5 @@ class ListComponent(Generic[T], Component):
     def delete_items(self):
         raise NotImplementedError
 
-    def paste_items(self, items: List[T]):
+    def paste_items(self):
         raise NotImplementedError

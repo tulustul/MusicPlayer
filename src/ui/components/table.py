@@ -2,7 +2,6 @@ import math
 import logging
 from typing import Optional, Any, Generic, TypeVar
 
-from core.app import App
 from core import config, utils
 
 from .listview import ListComponent
@@ -25,25 +24,9 @@ class TableComponent(Generic[T], ListComponent[T]):
     def __init__(self, **kwargs):
         self._columns = []
 
-        self.headers_color = colors['table-headers']
-        self.borders_color = colors['table-borders']
-        self.borders_selected_color = colors['table-borders-selected']
-        self.header_borders = colors['table-header-borders']
-        self.highlighted_color = colors['highlighted-item']
-        self.highlighted_selected_color = colors['highlighted-selected-item']
-
         self.border = config.theme['strings']['border-vertical']
 
-        self._highlighted_item: Optional[T] = None
-
-        app = App.get_instance()
-        app.audio.current_track.subscribe(self.set_highlighed_item)
-
         super().__init__(**kwargs)
-
-    def set_highlighed_item(self, item: T):
-        self._highlighted_item = item
-        self.mark_for_redraw()
 
     def draw_content(self):
         page_data = self.filtered_data[self.min_index:self.max_index]
@@ -61,42 +44,38 @@ class TableComponent(Generic[T], ListComponent[T]):
 
             self.draw_text(
                 column['name'], 0, x,
-                column_size, self.headers_color,
+                column_size, colors['headers'],
             )
-
-            if not is_last_column:
-                self.win.addstr(
-                    0, x + column['real_size'],
-                    self.border, self.header_borders,
-                )
 
             formatter = FORMATS.get(column.get('format'), default_format)
 
-            for y, entry in page_data:
-                is_selected = entry == self._highlighted_item
-                if y + self.min_index == self.index:
-                    color = (
-                        self.highlighted_selected_color
-                        if is_selected else self.selected_color
-                    )
-                    border_color = self.borders_selected_color
-                else:
-                    color = (
-                        self.highlighted_color if is_selected else self.color
-                    )
-                    border_color = self.borders_color
+            for y, item in page_data:
+                color = self.get_item_color(item)
 
-                text = formatter(getattr(entry, column['field'], ''))
+                text = formatter(getattr(item, column['field'], ''))
 
-                # logger.debug('{} {} {}'.format(y, x, text))
                 self.draw_text(text, y + 1, x, column['real_size'], color)
                 if not is_last_column:
                     self.win.addstr(
                         y + 1, x + column['real_size'],
-                        self.border, border_color,
+                        self.border, color,
                     )
 
             x += column['real_size'] + len(self.border)
+
+    def get_item_color(self, item: T):
+        if self.value == item:
+            if item == self.distinguished_item:
+                return colors['distinguished-selected-item']
+            return colors['selected']
+
+        if item in self.marked_items:
+            return colors['marked']
+
+        if item == self.distinguished_item:
+            return colors['distinguished-item']
+
+        return colors['normal']
 
     @property
     def list_size(self):
