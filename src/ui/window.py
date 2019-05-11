@@ -9,7 +9,7 @@ from core.config import config
 
 from . import colors
 from .renderer import Renderer
-from .components.component import Component
+from .components.abstract_component import AbstractComponent
 from .components.layout import Layout
 from .components.input import InputComponent
 from .components.label import LabelComponent
@@ -23,9 +23,9 @@ os.environ.setdefault('ESCDELAY', '25')
 class Window:
 
     def __init__(self):
-        self.components: Dict[object, Component] = {}
+        self.components: Dict[object, AbstractComponent] = {}
 
-        self.active_component_stack: List[Component] = []
+        self.active_component_stack: List[AbstractComponent] = []
 
         self.screen = None
 
@@ -89,7 +89,7 @@ class Window:
     def get_component(self, component_class: type):
         return self.root_component.get_component(component_class)
 
-    def focus(self, component: Component):
+    def focus(self, component: AbstractComponent):
         self.active_component_stack.append(component)
 
     def blur_active_component(self):

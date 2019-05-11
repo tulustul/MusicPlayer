@@ -160,7 +160,11 @@ class ListComponent(Generic[T], Component):
         self.delete_items()
 
     def delete_items(self):
-        raise NotImplementedError
+        if hasattr(self, 'on_delete'):
+            self.on_delete(self.marked_items or [self.value])
+            self.mark_for_redraw()
 
     def paste_items(self):
-        raise NotImplementedError
+        if hasattr(self, 'on_paste'):
+            self.on_paste(Clipboard.get_instance().get())
+            self.mark_for_redraw()

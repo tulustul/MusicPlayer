@@ -31,7 +31,9 @@ class LibraryComponent(TracksComponent):
         app = App.get_instance()
         app.audio.current_track.subscribe(self.set_distinguished_item)
 
-        self.data = list(db.session.query(Track))
+        session = db.get_session()
+
+        self.data = list(session.query(Track))
 
     def filter(self, query: str):
         if not db.session:

@@ -168,7 +168,7 @@
       "command": "refresh"
     },
     {
-      "keys": ["d"],
+      "keys": ["D"],
       "command": "debug_dump_layout"
     },
     {
@@ -198,6 +198,22 @@
     {
       "keys": ["M"],
       "command": "unmark_all_items"
+    },
+    {
+      "keys": ["y"],
+      "command": "copy"
+    },
+    {
+      "keys": ["d"],
+      "command": "cut"
+    },
+    {
+      "keys": ["p"],
+      "command": "paste"
+    },
+    {
+      "keys": ["<delete>"],
+      "command": "delete"
     }
   ]
 }

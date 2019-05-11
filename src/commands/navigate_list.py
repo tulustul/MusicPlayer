@@ -64,3 +64,23 @@ def mark_item(list_component: ListComponent):
 def unmark_all_items(list_component: ListComponent):
     list_component.marked_items.clear()
     list_component.mark_for_redraw()
+
+
+@command()
+def copy(list_component: ListComponent):
+    list_component.copy_items()
+
+
+@command()
+def cut(list_component: ListComponent):
+    list_component.cut_items()
+
+
+@command()
+def delete(list_component: ListComponent):
+    list_component.delete_items()
+
+
+@command()
+def paste(list_component: ListComponent):
+    list_component.paste_items()
