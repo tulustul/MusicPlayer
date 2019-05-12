@@ -18,18 +18,18 @@ class TracksComponent(TableComponent[Track]):
         super().__init__(**kwargs)
         self.columns = config['playlist']['columns']
 
-    def select(self):
-        super().select()
-        App.get_instance().audio.play_track(self.value)
+        app = App.get_instance()
+
+        app.audio.current_track.subscribe(self.set_distinguished_item)
+
+    def on_select(self, track: Track):
+        App.get_instance().audio.play_track(track)
 
 
 class LibraryComponent(TracksComponent):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        app = App.get_instance()
-        app.audio.current_track.subscribe(self.set_distinguished_item)
 
         session = db.get_session()
 

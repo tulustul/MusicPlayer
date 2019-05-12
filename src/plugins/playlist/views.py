@@ -40,32 +40,44 @@ class PlaylistTracksComponent(TracksComponent):
         self.playlist = playlist
         self.load_playlist()
 
+    def get_query(self):
+        session = db.get_session()
+        return session.query(PlaylistTrack).filter(
+            PlaylistTrack.playlist_id == self.playlist.id,
+        )
 
     def load_playlist(self):
         session = db.get_session()
 
-        # tracks = session.query(PlaylistTrack).filter(
-        #     PlaylistTrack.playlist_id == self.playlist.id,
-        # ).order_by(PlaylistTrack.order.asc())
+        tracks = self.get_query().order_by(PlaylistTrack.order.asc())
 
-        # self.data = [t.track for t in tracks]
-
-        self.data = list(session.query(Track).limit(5))
+        self.data = [t.track for t in tracks]
 
     def on_paste(self, tracks: List[Track]):
+        session = db.get_session()
+
+        start_index = self.get_query().count()
+
         playlist_tracks = [
             PlaylistTrack(
                 playlist_id=self.playlist.id,
                 track_id=track.id,
-                order=index,
+                order=start_index + index,
             ) for index, track in enumerate(tracks)
         ]
 
-        session = db.get_session()
         session.bulk_save_objects(playlist_tracks)
         session.commit()
 
         self.load_playlist()
 
-    def on_delete(self, items: List[Track]):
-        raise NotImplementedError
+    def on_delete(self, tracks: List[Track]):
+        session = db.get_session()
+
+        self.get_query().filter(
+            PlaylistTrack.track_id.in_(t.id for t in tracks),
+        ).delete(synchronize_session=False)
+
+        session.commit()
+
+        self.load_playlist()

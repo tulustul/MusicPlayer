@@ -212,7 +212,7 @@
       "command": "paste"
     },
     {
-      "keys": ["<delete>"],
+      "keys": ["<dc>"],
       "command": "delete"
     }
   ]

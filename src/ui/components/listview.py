@@ -111,8 +111,8 @@ class ListComponent(Generic[T], Component):
     def previous_page(self):
         self.set_index(self.index - self.list_size)
 
-    def limit_index(self, current_index: int, new_index: int):
-        return max(0, min(new_index, len(self.filtered_data) - 1))
+    def limit_index(self, index: int):
+        return max(0, min(index, len(self.filtered_data) - 1))
 
     def wrap_index(self, index: int):
         if index < 0:
@@ -123,7 +123,7 @@ class ListComponent(Generic[T], Component):
 
     def set_index(self, new_index):
         old_index = self.index
-        self.index = self.limit_index(self.index, new_index)
+        self.index = self.limit_index(new_index)
         self.page = self.index // self.list_size
         self.focused_item.on_next(self.value)
 
@@ -137,6 +137,8 @@ class ListComponent(Generic[T], Component):
 
     def select(self):
         self.selected_item.on_next(self.value)
+        if hasattr(self, 'on_select'):
+            self.on_select(self.value)
 
     def filter(self, term: str):
         tokens = term.split()
@@ -163,6 +165,7 @@ class ListComponent(Generic[T], Component):
         if hasattr(self, 'on_delete'):
             self.on_delete(self.marked_items or [self.value])
             self.mark_for_redraw()
+            self.index = self.limit_index(self.index)
 
     def paste_items(self):
         if hasattr(self, 'on_paste'):
