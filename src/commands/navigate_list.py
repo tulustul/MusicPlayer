@@ -77,8 +77,8 @@ def cut(list_component: ListComponent):
 
 
 @command()
-def delete(list_component: ListComponent):
-    list_component.delete_items()
+async def delete(list_component: ListComponent):
+    await list_component.delete_items()
 
 
 @command()

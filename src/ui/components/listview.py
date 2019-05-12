@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List, Set, Generic, TypeVar
 
@@ -161,9 +162,15 @@ class ListComponent(Generic[T], Component):
         self.copy_items()
         self.delete_items()
 
-    def delete_items(self):
+    async def delete_items(self):
         if hasattr(self, 'on_delete'):
-            self.on_delete(self.marked_items or [self.value])
+            to_delete = self.marked_items or [self.value]
+
+            if asyncio.iscoroutinefunction(self.on_delete):
+                await self.on_delete(to_delete)
+            else:
+                self.on_delete(to_delete)
+
             self.mark_for_redraw()
             self.index = self.limit_index(self.index)
 
