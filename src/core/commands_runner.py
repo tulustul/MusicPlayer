@@ -30,8 +30,6 @@ class CommandsRunner:
             logger.warn('Unknown command: {}'.format(command_name))
 
     def run_command(self, command: Command, *args):
-        # logger.debug('invoking command: {} {}'.format(command.name, args))
-
         args_iterator = args.__iter__()
 
         kwargs = {}

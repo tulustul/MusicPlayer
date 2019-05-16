@@ -9,6 +9,10 @@ PyGObject
 
 # linters
 mypy
+flake8
 
 # stubs
 sqlalchemy-stubs
+
+# tests
+pytest
