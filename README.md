@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/tulustul/MusicPlayer.svg?branch=master)](https://travis-ci.com/tulustul/MusicPlayer)
+
 # Python + asyncio + rx + gstreamer + curses music player
 
 All the data is kept in SQLite.
