@@ -1,14 +1,13 @@
 import os
 import logging
-import threading
-
-import gi
-gi.require_version('AppIndicator3', '0.1')
-from gi.repository import AppIndicator3
-from gi.repository import Gtk
 
 import commands
 from plugins.track_scheduler import commands as track_scheduler_commands
+
+import gi
+gi.require_version('AppIndicator3', '0.1')
+from gi.repository import AppIndicator3  # noqa: E402
+from gi.repository import Gtk  # noqa: E402
 
 logger = logging.getLogger('tray-menu')
 

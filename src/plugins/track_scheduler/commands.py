@@ -2,7 +2,6 @@ import random
 
 from player_ui import PlayerUI
 from commands.decorator import command
-from ui.window import Window
 from core.audio import AudioBackend
 
 

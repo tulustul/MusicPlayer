@@ -12,16 +12,14 @@ from .renderer import Renderer
 from .components.abstract_component import AbstractComponent
 from .components.layout import Layout
 from .components.input import InputComponent
-from .components.label import LabelComponent
 from .rect import Rect
 
-logger = logging.getLogger('ui.window')
+logger = logging.getLogger("ui.window")
 
-os.environ.setdefault('ESCDELAY', '25')
+os.environ.setdefault("ESCDELAY", "25")
 
 
 class Window:
-
     def __init__(self):
         self.components: Dict[object, AbstractComponent] = {}
 
@@ -57,7 +55,7 @@ class Window:
 
         try:
             curses.start_color()
-        except:
+        except Exception:
             pass
 
         self.screen.refresh()
@@ -71,7 +69,7 @@ class Window:
         curses.endwin()
 
     async def process_input(self):
-        interval = config.get('input_interval', 0.02)
+        interval = config.get("input_interval", 0.02)
         while self.running:
             self.renderer.update()
             await asyncio.sleep(interval)
@@ -104,15 +102,17 @@ class Window:
     def quit(self):
         self.running = False
 
-    async def input(self, prompt: str, default_value=''):
+    async def input(self, prompt: str, default_value=""):
         if not self.input_container:
-            raise ValueError('No input_container')
+            raise ValueError("No input_container")
 
         self.input_container.add(self.input_component)
         self.root_component.update_layout()
 
         self.input_mode = True
-        result = await self.input_component.request_value(prompt, default_value)
+        result = await self.input_component.request_value(
+            prompt, default_value,
+        )
         self.input_component.detach()
         self.input_mode = False
         return result

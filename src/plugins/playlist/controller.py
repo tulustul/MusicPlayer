@@ -8,16 +8,15 @@ from ui.components.tabs_layout import Tab
 from .models import Playlist
 from .views import PlaylistsComponent, PlaylistTracksComponent
 
-logger = logging.getLogger('plugins.playlist')
+logger = logging.getLogger("plugins.playlist")
 
 
 class PlaylistController:
-
     def __init__(self):
         self.app: PlayerApp = PlayerApp.get_instance()
         self.playlist_container = self.app.ui.top_layout
 
-        self.playlists_view: Optional[LabelComponent] = None
+        self.playlists_view: Optional[PlaylistsComponent] = None
 
         self.app.injector.provide(PlaylistController, lambda: self)
 
@@ -34,15 +33,20 @@ class PlaylistController:
             self.playlist_container.insert(0, self.playlists_view)
             self.app.window.focus(self.playlists_view)
 
-            self.subscription = self.playlists_view.selected_item.subscribe(self.open_playlist)
+            self.subscription = self.playlists_view.selected_item.subscribe(
+                self.open_playlist
+            )
 
     def open_playlist(self, playlist_name: str):
-        playlist = db.get_session().query(Playlist).filter(
-            Playlist.name == playlist_name,
-        ).one()
+        playlist = (
+            db.get_session()
+            .query(Playlist)
+            .filter(Playlist.name == playlist_name)
+            .one()
+        )
 
         if not playlist:
-            logger.error(f'Unable to open playlist {playlist_name}')
+            logger.error(f"Unable to open playlist {playlist_name}")
             return
 
         tabs_layout = self.app.ui.tabs_layout
@@ -54,10 +58,9 @@ class PlaylistController:
         else:
             tracks_view = PlaylistTracksComponent(playlist)
             self.remove_current_tab_from_stack()
-            self.app.ui.tabs_layout.add_tab(Tab(
-                title=playlist.name,
-                component=tracks_view,
-            ))
+            self.app.ui.tabs_layout.add_tab(
+                Tab(title=playlist.name, component=tracks_view)
+            )
             self.app.window.focus(tracks_view)
 
     def remove_current_tab_from_stack(self):

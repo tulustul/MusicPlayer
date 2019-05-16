@@ -2,9 +2,12 @@ dist: xenial   # required for Python >= 3.7
 language: python
 python:
   - "3.7"
+env: PACKAGES="libgirepository1.0-dev python3-gi" PYTHON="python3"
 install:
+  - sudo apt-get update -q
+  - sudo apt-get install --no-install-recommends -y $(echo $PACKAGES)
   - pip install -r requirements.txt
 script:
-  - pytest
+  - pytest src
   - mypy src
   - flake8

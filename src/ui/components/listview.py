@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import List, Set, Generic, TypeVar
+from typing import List, Set, Generic, TypeVar, Optional
 
 from rx.subjects import Subject
 

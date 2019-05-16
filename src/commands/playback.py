@@ -1,11 +1,11 @@
 import logging
 
 from core.audio.audio_backend import AudioBackend
-from ui.window import Window
 
 from .decorator import command
 
 logger = logging.getLogger('commands')
+
 
 @command()
 def pause_track(audio: AudioBackend):

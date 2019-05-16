@@ -1,3 +1,4 @@
+# flake8: noqa
 from .navigate_list import *
 from .playback import *
 from .window import *

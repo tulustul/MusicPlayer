@@ -1,5 +1,4 @@
 import logging
-from typing import Set
 
 logger = logging.getLogger('ui.renderer')
 
