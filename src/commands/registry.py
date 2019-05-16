@@ -15,7 +15,9 @@ by_name: Dict[str, Command] = {}
 by_display_name: Dict[str, Command] = {}
 
 
-def register(func: FunctionType, name: str, display_name: str, visible_in_palette: bool):
+def register(
+    func: FunctionType, name: str, display_name: str, visible_in_palette: bool
+):
     command = Command(
         func=func,
         name=name,

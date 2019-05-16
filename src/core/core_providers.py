@@ -4,10 +4,13 @@ from ui.window import Window
 from .commands_runner import CommandsRunner
 from .audio.audio_backend import AudioBackend
 
+
 def register_core_providers(app):
     app.injector.provide(Window, lambda: app.window)
 
-    app.injector.provide(ListComponent, lambda: _get_list_component(app.window))
+    app.injector.provide(
+        ListComponent, lambda: _get_list_component(app.window)
+    )
 
     app.injector.provide(CommandsRunner, lambda: app.commander)
     app.injector.provide(AudioBackend, lambda: app.audio)

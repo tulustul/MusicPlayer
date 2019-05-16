@@ -4,7 +4,6 @@ import curses
 from ui.colors import colors
 
 from .abstract_component import AbstractComponent
-from .layout import Layout
 from ..rect import Rect
 
 logger = logging.getLogger('ui')

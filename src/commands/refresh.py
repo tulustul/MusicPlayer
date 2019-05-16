@@ -1,4 +1,3 @@
-import asyncio
 import curses
 import logging
 
@@ -7,7 +6,7 @@ from ui.rect import Rect
 
 from .decorator import command
 
-logger = logging.getLogger('commands.refresh')
+logger = logging.getLogger("commands.refresh")
 
 
 @command()
@@ -19,7 +18,7 @@ def refresh(window: Window):
     resize = curses.is_term_resized(curses.LINES, curses.COLS)
 
     if resize is True:
-        logger.debug(f'resizing to {y}x{x}')
+        logger.debug(f"resizing to {y}x{x}")
 
         window.screen.clear()
         curses.resizeterm(y, x)

@@ -1,6 +1,5 @@
 from collections import defaultdict
 import logging
-from typing import cast
 
 import commands
 from core import (
@@ -52,7 +51,6 @@ class BindingsController:
         current_context = self.window.active_component.context
         binding_context = self.context_keybindings.get(current_context) or {}
         return binding_context.get(key) or self.general_keybindings.get(key)
-
 
     def handle_keys(self, key: str):
         if not self.window.input_mode or key in ('<up>', '<down>'):

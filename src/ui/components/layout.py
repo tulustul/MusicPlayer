@@ -1,9 +1,8 @@
 from decimal import Decimal, ROUND_HALF_UP
 from enum import Enum
 import logging
-from typing import List, Tuple, Optional, Set
+from typing import List, Optional
 
-from core.errors import errors
 from ui.renderer import Renderer
 
 from .abstract_component import AbstractComponent

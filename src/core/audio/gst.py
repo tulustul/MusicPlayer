@@ -1,11 +1,5 @@
 import asyncio
 import logging
-import threading
-
-import gi
-gi.require_version('Gst', '1.0')
-from gi.repository import GObject
-from gi.repository import Gst
 
 from core.config import config
 from core.errors import errors
@@ -13,11 +7,16 @@ from plugins.library.models import Track
 
 from .audio_backend import AudioBackend
 
-logger = logging.getLogger('audio')
+import gi
+
+gi.require_version("Gst", "1.0")
+from gi.repository import GObject  # noqa: E402
+from gi.repository import Gst  # noqa: E402
+
+logger = logging.getLogger("audio")
 
 
 class GstAudioBackend(AudioBackend):
-
     def __init__(self):
         super().__init__()
 
@@ -26,7 +25,7 @@ class GstAudioBackend(AudioBackend):
 
         self.pipeline = Gst.Pipeline()
 
-        self.playbin = Gst.ElementFactory.make('playbin', None)
+        self.playbin = Gst.ElementFactory.make("playbin", None)
         if not self.playbin:
             message = 'Cannot instantiate gst "playbin" playbin.'
             logger.error(message)
@@ -47,15 +46,13 @@ class GstAudioBackend(AudioBackend):
 
     def set_track(self, track: Track):
         self.pipeline.set_state(Gst.State.READY)
-        self.playbin.set_property('uri', track.uri)
+        self.playbin.set_property("uri", track.uri)
         self.duration.on_next(track.length)
         self.position.on_next(0)
 
     def seek(self, position: int):
         self.playbin.seek_simple(
-            Gst.Format.TIME,
-            Gst.SeekFlags.FLUSH,
-            position * Gst.SECOND,
+            Gst.Format.TIME, Gst.SeekFlags.FLUSH, position * Gst.SECOND
         )
         self.position.on_next(position)
 
@@ -70,7 +67,7 @@ class GstAudioBackend(AudioBackend):
         self.state.on_next(self.State.paused)
 
     async def pool_messages(self):
-        interval = config.get('input_interval', 0.02)
+        interval = config.get("input_interval", 0.02)
         while True:
             await asyncio.sleep(interval)
             message = True
@@ -83,7 +80,9 @@ class GstAudioBackend(AudioBackend):
         while True:
             await asyncio.sleep(0.5)
             if self.playing:
-                success, position = self.playbin.query_position(Gst.Format.TIME)
+                success, position = self.playbin.query_position(
+                    Gst.Format.TIME
+                )
                 if success:
                     self.position.on_next(position / Gst.SECOND)
 
@@ -92,7 +91,7 @@ class GstAudioBackend(AudioBackend):
         self.end_of_track.on_next(None)
 
     def on_error(self):
-        logger.error('GST error :(')
+        logger.error("GST error :(")
         self.pipeline.set_state(Gst.State.NULL)
         self.playing = False
         errors.on_next(None)

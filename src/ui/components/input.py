@@ -103,4 +103,3 @@ class InputComponent(Component):
         self.mark_for_redraw()
         self.visible = True
         return self.future
-

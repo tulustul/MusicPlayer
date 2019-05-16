@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
 from ui.colors import colors
 
@@ -16,7 +16,6 @@ class Tab:
 
 
 class TabsLayout(AbstractLayout):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = Layout(direction=Layout.Direction.vertical)
@@ -72,7 +71,10 @@ class TabsLayout(AbstractLayout):
     def switch_to_tab_index(self, index: int):
         assert index >= 0 and index < len(self.tabs)
 
-        if self.displayed_tab and self.displayed_tab.component in self.layout.childs:
+        if (
+            self.displayed_tab
+            and self.displayed_tab.component in self.layout.childs
+        ):
             self.layout.remove(self.displayed_tab.component)
             self.displayed_tab = None
 
@@ -89,7 +91,6 @@ class TabsLayout(AbstractLayout):
 
 
 class TabsHeaderComponent(Component):
-
     def __init__(self, tabs_layout: TabsLayout):
         super().__init__(size=1)
         self.tabs_layout = tabs_layout
@@ -104,10 +105,12 @@ class TabsHeaderComponent(Component):
 
         if childs_count > 1:
             chars_count = childs_count * 2
-            tabs_chars = ' '.join(str(i) for i in range(1, childs_count + 1))
+            tabs_chars = " ".join(str(i) for i in range(1, childs_count + 1))
             x = self.rect.width - chars_count
             self.draw_text(tabs_chars, 0, x, chars_count)
 
             current_index = self.tabs_layout.tabs.index(tab)
-            color = colors['distinguished-item']
-            self.draw_text(str(current_index + 1), 0, x + current_index * 2, 1, color)
+            color = colors["distinguished-item"]
+            self.draw_text(
+                str(current_index + 1), 0, x + current_index * 2, 1, color
+            )

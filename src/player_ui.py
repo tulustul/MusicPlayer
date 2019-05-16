@@ -3,14 +3,11 @@ from plugins.library.views import LibraryComponent
 from plugins.bar.views import BarComponent
 from ui import colors
 from ui.components.layout import Layout
-from ui.components.table import TableComponent
 from ui.components.label import LabelComponent
-from ui.components.input import InputComponent
 from ui.components.tabs_layout import TabsLayout, Tab
 
 
 class PlayerUI:
-
     def __init__(self, app: App):
         self.app = app
         self.root = app.window.root_component
@@ -23,11 +20,14 @@ class PlayerUI:
         self.tabs_layout = TabsLayout()
         self.top_layout.add(self.tabs_layout)
 
-        self.tracks_view = LibraryComponent(context='tracks', display_name='Library')
-        self.tabs_layout.add_tab(Tab(
-            title=self.tracks_view.display_name,
-            component=self.tracks_view,
-        ))
+        self.tracks_view = LibraryComponent(
+            context="tracks", display_name="Library"
+        )
+        self.tabs_layout.add_tab(
+            Tab(
+                title=self.tracks_view.display_name, component=self.tracks_view
+            )
+        )
         app.window.focus(self.tracks_view)
 
         self.stack_layout = Layout()
@@ -43,8 +43,8 @@ class PlayerUI:
         error_component = LabelComponent(
             text,
             align=LabelComponent.Align.left,
-            color=colors.colors['error'],
-            context='error',
+            color=colors.colors["error"],
+            context="error",
             size=1,
         )
         self.stack_layout.add(error_component)

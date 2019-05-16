@@ -28,6 +28,7 @@ logger = logging.getLogger('app')
 
 errors.subscribe(lambda e: logger.error(e))
 
+
 def log_exception(window=None):
     exc_type, exc_value, exc_traceback = sys.exc_info()
     error = ''.join(traceback.format_exception(
@@ -102,7 +103,7 @@ class App:
                 except KeyboardInterrupt:
                     running = True
                     keyboard.raw_keys.on_next(curses.KEY_EXIT)
-        except Exception as e:
+        except Exception:
             self.crashed = True
             log_exception(self.window)
         finally:

@@ -1,6 +1,5 @@
 from commands.decorator import command
 from core.commands_runner import CommandsRunner
-from plugins import commands_palette
 from ui.window import Window
 from player_ui import PlayerUI
 
@@ -8,7 +7,9 @@ from .components import PaletteComponent
 
 
 @command()
-async def open_palette(commands_runner: CommandsRunner, ui: PlayerUI, window: Window):
+async def open_palette(
+    commands_runner: CommandsRunner, ui: PlayerUI, window: Window
+):
     palette = PaletteComponent(size=6)
 
     ui.stack_layout.add(palette)
@@ -17,10 +18,10 @@ async def open_palette(commands_runner: CommandsRunner, ui: PlayerUI, window: Wi
     window.focus(palette)
 
     subscription = window.input_component.value.subscribe(
-        lambda value: palette.filter(value),
+        lambda value: palette.filter(value)
     )
 
-    result = await window.input('>')
+    result = await window.input(">")
 
     window.blur_active_component()
     palette.detach()
