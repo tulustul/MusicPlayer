@@ -17,7 +17,6 @@ from . import (
     plugging,
     audio,
     bindings,
-    context,
     keyboard,
     db,
     dependency_injection,
@@ -77,8 +76,6 @@ class App:
             self.setup()
 
             plugging.start_plugins()
-
-            context.push(config['default_context'])
 
             core_providers.register_core_providers(self)
 

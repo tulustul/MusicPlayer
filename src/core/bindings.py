@@ -7,7 +7,6 @@ from core import (
     commands_runner,
     config,
     keyboard,
-    context,
 )
 from ui.window import Window
 
@@ -50,7 +49,6 @@ class BindingsController:
         keyboard.keys.subscribe(self.handle_keys)
 
     def get_binding(self, key: str):
-        logger.info(key)
         current_context = self.window.active_component.context
         binding_context = self.context_keybindings.get(current_context) or {}
         return binding_context.get(key) or self.general_keybindings.get(key)

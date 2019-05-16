@@ -5,11 +5,7 @@ from ui.components.component import Component
 from ui.colors import colors
 from ui.components.progress import ProgressComponent
 from core.config import theme
-from core import (
-    playback,
-    context,
-    audio,
-)
+from core import playback, audio
 from core.audio.audio_backend import TimeTrack
 
 logger = logging.getLogger('ui')

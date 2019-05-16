@@ -1,6 +1,5 @@
 import logging
 
-from core import context
 from player_ui import PlayerUI
 from ui.window import Window
 
