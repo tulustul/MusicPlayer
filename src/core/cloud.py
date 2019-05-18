@@ -1,10 +1,19 @@
-from typing import List, Sequence
+import logging
+from typing import List, Sequence, Dict, Type
 
 from core.errors import errors
+from core.config import config
 from plugins.library.models import Track
+
+logger = logging.getLogger("cloud")
 
 
 class CloudProvider:
+
+    PROVIDER_KEY = None
+
+    def __init__(self, config: dict):
+        pass
 
     async def push_files(self, uris: Sequence[str]):
         raise NotImplementedError
@@ -13,10 +22,24 @@ class CloudProvider:
         raise NotImplementedError
 
 
-class Cloud:
+class CloudSynchronizer:
+
+    PROVIDERS_REGISTRY: Dict[str, Type[CloudProvider]] = {}
 
     def __init__(self):
-        self.providers: List[CloudProvider] = []
+        cloud_config = config.get("cloud", [])
+
+        self.providers: List[CloudProvider] = [
+            self._make_provider(c) for c in cloud_config
+        ]
+
+    @classmethod
+    def _make_provider(cls, provider_config: dict):
+        provider_key = provider_config["provider"]
+        if provider_key not in cls.PROVIDERS_REGISTRY:
+            raise ValueError(f'Unknown cloud provider: "{provider_key}"')
+
+        return cls.PROVIDERS_REGISTRY[provider_key](provider_config)
 
     async def push_library(self):
         ...
@@ -28,7 +51,7 @@ class Cloud:
         uris = [t.local_uri for t in tracks if t.local_uri]
 
         if not all(uris):
-            errors.on_next('Rip track before pushing it to cloud.')
+            errors.on_next("Rip track before pushing it to cloud.")
             return
 
         for provider in self.providers:
