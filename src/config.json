@@ -2,7 +2,7 @@
   "theme": "afterglow",
   "db_file": "~/.config/music-player/music.db",
   "log_file": "~/.config/music-player/player.log",
-  "log_level": "DEBUG",
+  "log_level": "INFO",
   "input_interval": 0.02,
   "debug": true,
   "plugins_reload_debounce_time": 0.3,
@@ -20,7 +20,8 @@
     "scan",
     "track_scheduler",
     "playlist",
-    "search"
+    "search",
+    "cloud_s3"
     // "tray_menu",
   ],
 
@@ -55,6 +56,12 @@
         "priority": 1,
         "size": 6,
         "format": "time"
+      },
+      {
+        "field": "cloud_synced",
+        "name": "C",
+        "priority": 1,
+        "size": 2
       }
     ]
   },
