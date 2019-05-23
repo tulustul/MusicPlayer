@@ -6,7 +6,7 @@ from rx.subjects import Subject, ReplaySubject
 from rx.operators import map
 
 from core import utils
-from plugins.library.models import Track
+from core.track import Track
 
 logger = logging.getLogger('audio')
 

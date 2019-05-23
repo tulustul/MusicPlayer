@@ -2,28 +2,12 @@ import logging
 
 from sqlalchemy import or_
 
-from ui.components.table import TableComponent
-from core.app import App
-from core.config import config
+from ui.components.tracks import TracksComponent
 from core import db
 
-from .models import Track
+from core.track import Track
 
 logger = logging.getLogger('plugins.library')
-
-
-class TracksComponent(TableComponent[Track]):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.columns = config['playlist']['columns']
-
-        app = App.get_instance()
-
-        app.audio.current_track.subscribe(self.set_distinguished_item)
-
-    def on_select(self, track: Track):
-        App.get_instance().audio.play_track(track)
 
 
 class LibraryComponent(TracksComponent):

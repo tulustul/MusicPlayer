@@ -61,6 +61,8 @@ class App:
             self.window = Window()
             self.injector = dependency_injection.Injector()
 
+            from commands import core_commands  # noqa
+
             plugging.load_plugins()
 
             self.commander = commands_runner.CommandsRunner(
@@ -72,6 +74,7 @@ class App:
 
             if config['log_level'] == 'DEBUG':
                 self.loop.set_debug(True)
+
             db.init()
 
             self.setup()

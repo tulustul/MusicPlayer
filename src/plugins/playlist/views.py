@@ -3,9 +3,9 @@ from typing import List
 
 from core import db
 from core.app import App
+from core.track import Track
 from ui.components.listview import ListComponent
-from plugins.library.models import Track
-from plugins.library.views import TracksComponent
+from ui.components.tracks import TracksComponent
 
 from .models import Playlist, PlaylistTrack
 

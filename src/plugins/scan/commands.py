@@ -8,9 +8,9 @@ from typing import List
 import mutagen
 from sqlalchemy import exists
 
+from core.track import Track
 from core import db
 from commands.decorator import command
-from plugins import library
 from player_ui import PlayerUI
 from ui.components.progress import ProgressComponent
 from ui.window import Window
@@ -47,7 +47,7 @@ async def scan_local_files(window: Window, ui: PlayerUI):
 
 def create_tracks(progress_component: ProgressComponent, files: List[str]):
     total = len(files)
-    tracks: List[library.models.Track] = []
+    tracks: List[Track] = []
     for f in files:
         track = create_track(f)
         if track:
@@ -71,8 +71,9 @@ def create_track(filepath):
         return None
 
     if metadata:
-        return library.models.Track(
+        return Track(
             uri=f"file://{filepath}",
+            local_uri=f"file://{filepath}",
             source="local_disk",
             length=metadata.info.length,
             title=get_field(metadata, "TIT2") or os.path.basename(filepath),
@@ -89,7 +90,7 @@ def create_track(filepath):
 def add_tracks(tracks):
     for track in tracks:
         tracks_exists = db.session.query(
-            exists().where(library.models.Track.uri == track.uri)
+            exists().where(Track.uri == track.uri)
         ).scalar()
         if not tracks_exists:
             db.session.add(track)

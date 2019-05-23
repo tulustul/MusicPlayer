@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from core import db
-from plugins.library.models import Track
+from core.track import Track
 
 
 class Playlist(db.Base):

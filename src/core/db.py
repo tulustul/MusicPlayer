@@ -19,7 +19,10 @@ def init():
     db_path = Path(config['db_file']).expanduser()
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
-    engine = create_engine(f'sqlite:///{db_path}')
+    engine = create_engine(
+        f'sqlite:///{db_path}',
+        connect_args={'check_same_thread': False},
+    )
     Base.metadata.create_all(engine)
     DBSession = sessionmaker(bind=engine)
     session = DBSession()

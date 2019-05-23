@@ -3,7 +3,7 @@ import logging
 
 from core.config import config
 from core.errors import errors
-from plugins.library.models import Track
+from core.track import Track
 
 from .audio_backend import AudioBackend
 
