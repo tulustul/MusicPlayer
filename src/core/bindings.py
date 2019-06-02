@@ -27,7 +27,11 @@ class BindingsController:
         self.window = window
 
         for binding in config.keybindings:
-            for key in binding['keys']:
+            keys = binding['keys']
+            if isinstance(keys, str):
+                keys = [keys]
+
+            for key in keys:
                 command_name = binding['command']
                 command = commands.registry.get_by_name(command_name)
                 if command is None:

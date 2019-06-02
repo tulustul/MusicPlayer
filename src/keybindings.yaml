@@ -1,0 +1,118 @@
+- keys: ['q', '<exit>']
+  command: quit
+
+- keys: <home>
+  command: navigate_list_top
+
+- keys: <end>
+  command: navigate_list_bottom
+
+- keys: <npage>
+  command: navigate_next_page
+
+- keys: <ppage>
+  command: navigate_previous_page
+
+- keys: ['<down>', 'j']
+  command: navigate_list_by
+  args: [1]
+
+- keys: ['<up>', 'k']
+  command: navigate_list_by
+  args: [-1]
+
+- keys: <enter>
+  command: select_list_item
+
+- keys: <space>
+  command: pause_track
+
+- keys: ['<left>', 'h']
+  command: rewind_by_seconds
+  args: [-5]
+
+- keys: ['<right>', 'l']
+  command: rewind_by_seconds
+  args: [5]
+
+- keys: '['
+  command: rewind_by_seconds
+  args: [-30]
+
+- keys: ']'
+  command: rewind_by_seconds
+  args: [-30]
+
+- keys: z
+  command: rewind_by_percentage
+  args: [-0.2]
+
+- keys: x
+  command: rewind_by_percentage
+  args: [0.2]
+
+- keys: c
+  command: rewind_to_percentage
+  args: [0.5]
+
+- keys: s
+  command: rewind_to_percentage
+  args: 0
+
+- keys: p
+  command: previous_track
+
+- keys: n
+  command: next_track
+
+- keys: r
+  command: random_track
+
+- keys: /
+  command: search
+
+- keys: [';', ':']
+  command: open_palette
+
+- keys: ['<esc>', '<exit>', '<enter>']
+  command: dismiss_error
+  context: error
+
+- keys: <resize>
+  command: refresh
+
+- keys: D
+  command: debug_dump_layout
+
+- keys: P
+  command: toggle_playlists
+
+- keys: g
+  command: find_playing_track
+
+- keys: <tab>
+  command: focus_next_view
+
+- keys: v
+  command: toggle_visual_mode
+
+- keys: V
+  command: inverse_selection
+
+- keys: m
+  command: mark_item
+
+- keys: M
+  command: unmark_all_items
+
+- keys: y
+  command: copy
+
+- keys: d
+  command: cut
+
+- keys: p
+  command: paste
+
+- keys: <dc>
+  command: delete

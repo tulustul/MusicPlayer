@@ -3,8 +3,10 @@ import os
 from pathlib import Path
 from typing import Sequence, Union
 
-import commentjson
 from mypy_extensions import TypedDict
+from ruamel.yaml import YAML
+
+yaml = YAML()
 
 
 def deep_merge_dicts(dict_a: dict, dict_b: dict, target=None):
@@ -38,21 +40,21 @@ def deep_merge_dicts(dict_a: dict, dict_b: dict, target=None):
 
 
 def load_config(filename: str):
-    with open(f'{path}/{filename}.json') as config_file:
-        default_config: dict = commentjson.loads(config_file.read())
+    with open(f'{path}/{filename}.yaml') as config_file:
+        default_config: dict = yaml.load(config_file.read())
 
-    user_config_path = f'{home}/.config/music-player/{filename}.json'
+    user_config_path = f'{home}/.config/music-player/{filename}.yaml'
 
     if os.path.exists(user_config_path):
         with open(user_config_path) as config_file:
-            user_config: dict = commentjson.loads(config_file.read())
+            user_config: dict = yaml.load(config_file.read())
         return deep_merge_dicts(default_config, user_config)
 
     return default_config
 
 
 Keybinding = TypedDict('Keybinding', {
-    'keys': Sequence[str],
+    'keys': Union[str, Sequence[str]],
     'command': str,
     'context': str,
     'args': Sequence[Union[float, int, str, list, dict]],
@@ -69,8 +71,8 @@ keybindings: Sequence[Keybinding] = load_config('keybindings')
 
 theme = config['theme']
 
-with open(f'{path}/themes/{theme}.json') as theme_file:
-    theme = commentjson.loads(theme_file.read())
+with open(f'{path}/themes/{theme}.yaml') as theme_file:
+    theme = yaml.load(theme_file.read())
 
 logging.basicConfig(
     filename=Path(config['log_file']).expanduser(),

@@ -1,0 +1,19 @@
+colors:
+  normal: [254, 236]
+  selected: [254, 238]
+  marked: [250, 238]
+  prompt: [215, 236]
+  bar: [215, 235]
+  distinguished-item: [215, 236]
+  distinguished-selected-item: [215, 238]
+  bar-elapsed: [215, 238]
+  error: [197, 237]
+  headers: [254, 23]
+  table-header-borders: [94, 23]
+  table-borders: [94, 236]
+  table-borders-selected: [94, 238]
+
+strings:
+  playing: ""
+  paused: ""
+  border-vertical: " │ "
