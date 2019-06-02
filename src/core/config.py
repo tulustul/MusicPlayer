@@ -37,6 +37,20 @@ def deep_merge_dicts(dict_a: dict, dict_b: dict, target=None):
     return target
 
 
+def load_config(filename: str):
+    with open(f'{path}/{filename}.json') as config_file:
+        default_config: dict = commentjson.loads(config_file.read())
+
+    user_config_path = f'{home}/.config/music-player/{filename}.json'
+
+    if os.path.exists(user_config_path):
+        with open(user_config_path) as config_file:
+            user_config: dict = commentjson.loads(config_file.read())
+        return deep_merge_dicts(default_config, user_config)
+
+    return default_config
+
+
 Keybinding = TypedDict('Keybinding', {
     'keys': Sequence[str],
     'command': str,
@@ -49,13 +63,9 @@ Path(f'{home}/.config/music-player').mkdir(parents=True, exist_ok=True)
 
 path = os.path.dirname(__file__) + '/..'
 
-with open(f'{path}/config.json') as config_file:
-    default_config: dict = commentjson.loads(config_file.read())
+config = load_config('config')
 
-with open(f'{home}/.config/music-player/config.json') as config_file:
-    user_config: dict = commentjson.loads(config_file.read())
-
-config = deep_merge_dicts(default_config, user_config)
+keybindings: Sequence[Keybinding] = load_config('keybindings')
 
 theme = config['theme']
 
@@ -70,9 +80,3 @@ logging.basicConfig(
 
 rx_logger = logging.getLogger('Rx')
 rx_logger.setLevel(logging.INFO)
-
-
-def get_keybindings() -> Sequence[Keybinding]:
-    if not config:
-        raise ValueError('Config is not initialized yet')
-    return config.get('keybindings', [])

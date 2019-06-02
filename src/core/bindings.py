@@ -26,9 +26,7 @@ class BindingsController:
         self.commander = commander
         self.window = window
 
-        config_keybindings = config.get_keybindings()
-
-        for binding in config_keybindings:
+        for binding in config.keybindings:
             for key in binding['keys']:
                 command_name = binding['command']
                 command = commands.registry.get_by_name(command_name)
