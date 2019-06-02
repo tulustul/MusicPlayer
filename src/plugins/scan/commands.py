@@ -9,6 +9,7 @@ import mutagen
 from sqlalchemy import exists
 
 from core.track import Track
+from core import config
 from core import db
 from commands.decorator import command
 from player_ui import PlayerUI
@@ -20,9 +21,9 @@ logger = logging.getLogger("plugins.scan")
 
 @command()
 async def scan_local_files(window: Window, ui: PlayerUI):
-    path = await window.input("path:")
+    paths = config.config['local_library']
 
-    if not path:
+    if not paths:
         return
 
     progress_component = ProgressComponent()
@@ -30,14 +31,16 @@ async def scan_local_files(window: Window, ui: PlayerUI):
 
     ui.stack_layout.add(progress_component)
 
-    files = glob.iglob(f"{path}/**/*.*", recursive=True)
+    files: List[str] = []
+    for path in paths:
+        files += glob.iglob(f"{path}/**/*.*", recursive=True)
 
-    files = (f for f in files if not os.path.isdir(f))
+    files = [f for f in files if not os.path.isdir(f)]
 
     progress_component.set_text("scanning...")
 
     await asyncio.get_event_loop().run_in_executor(
-        None, functools.partial(create_tracks, progress_component, list(files))
+        None, functools.partial(create_tracks, progress_component, files)
     )
 
     progress_component.detach()
